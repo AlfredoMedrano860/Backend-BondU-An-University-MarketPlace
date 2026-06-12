@@ -1,4 +1,4 @@
-/*import {Request, Response, NextFunction} from 'express';
+import {Request, Response, NextFunction} from 'express';
 
 import {z} from 'zod';
 
@@ -15,6 +15,7 @@ export const validateBody = (schema: z.ZodTypeAny) => {
                     errors: error.issues
                 });
             }
+            next(error);
         }
     }
 }
@@ -51,4 +52,4 @@ export const validateQuery = (schema: z.ZodTypeAny) => {
             next(error);
         }
     }
-}*/
+}

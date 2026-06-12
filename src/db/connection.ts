@@ -1,6 +1,7 @@
-/*import {drizzle} from "drizzle-orm/node-postgres";
+import {drizzle} from "drizzle-orm/node-postgres";
 import {Pool} from "pg";
-import * as schema from "./schema";
+import * as schema from "./ProductSchemas/ProductSchemas";
+import * as schema2 from "./ProductSchemas/NotificatioSchemas";
 import env from "../../env";
 
 const createPool = ()=>{
@@ -16,6 +17,8 @@ const createPool = ()=>{
         //keepAliveInitialDelayMillis: 10000
     });
 }
-
-export const db = drizzle(createPool(), { schema });
-export default db;*/
+const schemaTota={
+    schema, 
+    schema2};
+export const db = drizzle(createPool(), { schemaTotal});
+export default db;

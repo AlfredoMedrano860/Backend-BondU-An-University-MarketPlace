@@ -1,19 +1,22 @@
-/*import app from './src/app';
-import env from './env';
-//import created routes
-import carRoutes from './src/routes/carRoutes';
-import authRoutes from './src/routes/authRoutes';
-import userRoutes from './src/routes/userRoutes';
+import app from "./src/app";
+import env from "./env";
 
-//use routes
-app.use('/api/cars', carRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
+import userRoutes from "./src/routes/UserRoutes/UserRoutes";
 
-app.use('/api', (req, res) =>{
-    res.status(404).json({ message: 'Endpoint not found' });
+app.use("/api/users", userRoutes);
+
+app.get("/", (_, res) => {
+    res.json({
+        message: "BondU API running",
+    });
+});
+
+app.use((_, res) => {
+    res.status(404).json({
+        message: "Endpoint not found",
+    });
 });
 
 app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
-});*/
+});

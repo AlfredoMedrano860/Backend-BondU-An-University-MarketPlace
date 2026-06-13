@@ -11,7 +11,8 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "ts-node src/db/seed.ts"
+    "db:seed": "ts-node src/db/seed.ts",
+    "seed:users": "tsx ./src/db/Seeds/UserSeed.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,6 @@
   "dependencies": {
     "@types/pg": "^8.20.0",
     "cors": "^2.8.6",
-    "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
     "express": "^5.2.1",
@@ -33,6 +33,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.8.0",
     "custom-env": "^2.0.6",
+    "drizzle-kit": "^0.31.10",
     "morgan": "^1.10.1",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",

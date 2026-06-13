@@ -1,7 +1,6 @@
-import { defineConfig } from "drizzle-kit";
 import env from "./env";
 
-export default defineConfig({
+export default {
     //db connection
     dialect: "postgresql",
     dbCredentials: {
@@ -15,4 +14,4 @@ export default defineConfig({
     verbose: true,
     //strict mode
     strict: true
-});
+};

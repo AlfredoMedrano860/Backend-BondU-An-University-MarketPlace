@@ -12,6 +12,10 @@ import * as userRoleTypesSchema from "./UserSchemas/UserRoleTypes";
 
 import env from "../../env";
 
+/**
+ * Crea un pool de conexiones PostgreSQL con SSL habilitado.
+ * El limite de 1 conexion es adecuado para entornos serverless.
+ */
 const createPool = () => {
     return new Pool({
         connectionString: env.DATABASE_URL,
@@ -23,6 +27,7 @@ const createPool = () => {
     });
 };
 
+/** Combinacion de todos los schemas para habilitar las queries relacionales de Drizzle */
 const schemaTotal = {
     ...productSchema,
     ...notificationSchema,
@@ -33,6 +38,7 @@ const schemaTotal = {
     ...userRoleTypesSchema,
 };
 
+/** Instancia principal de la base de datos. Usar este objeto en todos los archivos del proyecto. */
 export const db = drizzle(createPool(), {
     schema: schemaTotal,
 });

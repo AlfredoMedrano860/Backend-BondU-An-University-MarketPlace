@@ -3,6 +3,7 @@ import { pgTable, uuid } from "drizzle-orm/pg-core";
 import { products } from "./ProductSchemas";
 import { product_status } from "./ProductStatus";
 
+/** Tabla intermedia que relaciona productos con sus estados (muchos-a-muchos) */
 export const product_status_relation = pgTable(
   "product_status_relation",
   {

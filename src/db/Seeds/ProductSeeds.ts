@@ -1,11 +1,17 @@
 import { db } from '../connection';
-import {
-  products, product_categories, product_conditions, product_status,
-  product_category_relation, product_conditions_relation, product_status_relation
-} from "../ProductSchemas/ProductSchemas";
+import { products } from "../ProductSchemas/ProductSchemas";
+import { product_categories } from "../ProductSchemas/ProductCategories";
+import { product_conditions } from "../ProductSchemas/ProductConditions";
+import { product_status } from "../ProductSchemas/ProductStatus";
+import { product_category_relation } from "../ProductSchemas/RelationCategory";
+import { product_conditions_relation } from "../ProductSchemas/RelationCondition";
+import { product_status_relation } from "../ProductSchemas/RelationStatus";
 
+/**
+ * Puebla la base de datos con productos, categorias, condiciones y estados de prueba.
+ * Bloqueado en produccion mediante la variable de entorno `APP_STAGE`.
+ */
 const seed = async () => {
-  // PROTECTION: Prevent seeding in production
   const appStage = process.env.APP_STAGE;
 
   if (appStage === 'production') {

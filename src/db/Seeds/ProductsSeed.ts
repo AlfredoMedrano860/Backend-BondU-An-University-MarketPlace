@@ -1,14 +1,12 @@
 import { db } from '../connection';
-import { products } from "../schemas/ProductSchemas";
-import { product_categories } from "../schemas/ProductCategories";
-import { product_conditions } from "../schemas/ProductConditions";
-import { product_status } from "../schemas/ProductStatus";
-import { product_category_relation } from "../schemas/RelationCategory";
-import { product_conditions_relation } from "../schemas/RelationCondition";
-import { product_status_relation } from "../schemas/RelationStatus";
+import { products } from "../schemas/ProductsSchema";
+import { product_categories, products_categories } from "../schemas/ProductCategoriesSchema";
+import { product_conditions } from "../schemas/ProductConditionsSchema";
+import { product_status } from "../schemas/ProductStatusSchema";
+import { product_images } from "../schemas/ProductImagesSchema";
 
 /**
- * Puebla la base de datos con productos, categorias, condiciones y estados de prueba.
+ * Puebla la base de datos con productos, categorias, condiciones, estados e imagenes de prueba.
  * Bloqueado en produccion mediante la variable de entorno `APP_STAGE`.
  */
 const seed = async () => {
@@ -17,24 +15,22 @@ const seed = async () => {
   if (appStage === 'production') {
     console.error('ERROR: Cannot run seed script in production environment!');
     console.error('Current APP_STAGE:', appStage);
-    process.exit(1); // Exit with error code
+    process.exit(1);
   }
 
-  // confirmation for staging/test environments
   console.log(`Running seed in ${appStage} environment...`);
   console.log('starting seed...');
 
   try {
     console.log('deleting existing data...');
 
-    await db.delete(product_category_relation).execute();
-    await db.delete(product_conditions_relation).execute();
-    await db.delete(product_status_relation).execute();
-
+    await db.delete(product_images).execute();
+    await db.delete(products_categories).execute();
     await db.delete(products).execute();
     await db.delete(product_categories).execute();
     await db.delete(product_conditions).execute();
     await db.delete(product_status).execute();
+
     console.log('inserting seed data...');
 
     const insertedCategories =
@@ -69,88 +65,79 @@ const seed = async () => {
             name: "Gaming Laptop",
             description: "RTX gaming laptop",
             price: 1500,
+            condition_id: insertedConditions[0].condition_id,
+            status_id: insertedStatus[0].status_id,
           },
           {
             name: "Mechanical Keyboard",
             description: "RGB keyboard",
             price: 120,
+            condition_id: insertedConditions[1].condition_id,
+            status_id: insertedStatus[0].status_id,
           },
         ])
         .returning();
 
-    await db.insert(product_category_relation)
+    await db.insert(products_categories)
       .values([
         {
-          product_id:
-            insertedProducts[0].product_id,
-          category_id:
-            insertedCategories[0].category_id,
+          product_id: insertedProducts[0].product_id,
+          category_id: insertedCategories[0].category_id,
         },
         {
-          product_id:
-            insertedProducts[0].product_id,
-          category_id:
-            insertedCategories[1].category_id,
+          product_id: insertedProducts[0].product_id,
+          category_id: insertedCategories[1].category_id,
         },
         {
-          product_id:
-            insertedProducts[1].product_id,
-          category_id:
-            insertedCategories[2].category_id,
+          product_id: insertedProducts[1].product_id,
+          category_id: insertedCategories[2].category_id,
         },
       ]);
 
-    await db.insert(product_conditions_relation)
+    await db.insert(product_images)
       .values([
         {
-          product_id:
-            insertedProducts[0].product_id,
-          conditions_id:
-            insertedConditions[0].condition_id,
+          product_id: insertedProducts[0].product_id,
+          url: "https://placehold.co/800x600?text=Gaming+Laptop+1",
+          is_primary: true,
         },
         {
-          product_id:
-            insertedProducts[1].product_id,
-          conditions_id:
-            insertedConditions[1].condition_id,
+          product_id: insertedProducts[0].product_id,
+          url: "https://placehold.co/800x600?text=Gaming+Laptop+2",
+          is_primary: false,
+        },
+        {
+          product_id: insertedProducts[0].product_id,
+          url: "https://placehold.co/800x600?text=Gaming+Laptop+3",
+          is_primary: false,
+        },
+        {
+          product_id: insertedProducts[1].product_id,
+          url: "https://placehold.co/800x600?text=Keyboard+1",
+          is_primary: true,
+        },
+        {
+          product_id: insertedProducts[1].product_id,
+          url: "https://placehold.co/800x600?text=Keyboard+2",
+          is_primary: false,
         },
       ]);
 
-    await db.insert(product_status_relation)
-      .values([
-        {
-          product_id:
-            insertedProducts[0].product_id,
-          status_id:
-            insertedStatus[0].status_id,
-        },
-        {
-          product_id:
-            insertedProducts[1].product_id,
-          status_id:
-            insertedStatus[1].status_id,
-        },
-      ]);
-
-    console.log(
-      "Products seed completed successfully!"
-    );
-
-
+    console.log("Products seed completed successfully!");
 
   } catch (error) {
     console.error('Error during seeding:', error);
-    process.exit(1); // Exit with error code
+    process.exit(1);
   }
 }
 
 if (require.main === module) {
   seed().then(() => {
     console.log('Seed script finished.');
-    process.exit(0); // Exit with success code
+    process.exit(0);
   }).catch((error) => {
     console.error('Error running seed script:', error);
-    process.exit(1); // Exit with error code
+    process.exit(1);
   });
 }
 

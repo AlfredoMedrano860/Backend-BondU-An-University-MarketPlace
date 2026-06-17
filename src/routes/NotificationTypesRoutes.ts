@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { eq } from "drizzle-orm";
 import { db } from "../db/connection";
-import { notification_types } from "../db/schemas/NotificationsTypes";
+import { notification_types } from "../db/schemas/NotificationTypesSchema";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
 

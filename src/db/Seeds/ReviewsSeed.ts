@@ -1,7 +1,7 @@
 import { db } from "../connection";
-import { reviews } from "../schemas/Reviews";
-import { review_answers } from "../schemas/ReviewsAnswers";
-import { users } from "../schemas/Users";
+import { reviews } from "../schemas/ReviewsSchema";
+import { review_answers } from "../schemas/ReviewsAnswersSchema";
+import { users } from "../schemas/UsersSchema";
 
 /**
  * Puebla la base de datos con reseñas y respuestas de prueba.

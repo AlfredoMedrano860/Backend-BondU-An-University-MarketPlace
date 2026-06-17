@@ -1,11 +1,6 @@
-import { pgTable, uuid, text, timestamp, boolean, integer, numeric } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 
-import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-
-import { user_stats } from "./UserStats";
-import { user_preferences } from "./UserPreferences";
-import { user_roles } from "./UserRoles";
 
 /** Tabla principal de usuarios de la plataforma BondU */
 export const users = pgTable("users", {
@@ -21,16 +16,6 @@ export const users = pgTable("users", {
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
-
-/** Relaciones del usuario: tiene muchas estadisticas, preferencias y roles */
-export const user_relations = relations(
-    users,
-    ({ many }) => ({
-        stats: many(user_stats),
-        preferences: many(user_preferences),
-        roles: many(user_roles),
-    })
-);
 
 /** Tipo inferido de la fila completa de `users` */
 export type User = typeof users.$inferSelect;

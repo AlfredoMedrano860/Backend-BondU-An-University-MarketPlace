@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { user_preferences } from "../db/schemas/UserPreferences";
+import { user_preferences } from "../db/schemas/UserPreferencesSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 
 /** Router para las preferencias de usuario. Montado en `/api/users/preferences` */

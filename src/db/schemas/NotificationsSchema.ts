@@ -1,6 +1,6 @@
 import {pgTable,uuid,timestamp,boolean} from "drizzle-orm/pg-core";
 import {createInsertSchema,createSelectSchema,} from "drizzle-zod";
-import { notification_types } from "./NotificationsTypes";
+import { notification_types } from "./NotificationTypesSchema";
 
 /** Tabla de notificaciones individuales enviadas a los usuarios */
 export const notifications = pgTable("notifications", {

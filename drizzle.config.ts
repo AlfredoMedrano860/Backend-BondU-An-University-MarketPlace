@@ -1,13 +1,11 @@
-import env from "./env";
-
 export default {
     //db connection
     dialect: "postgresql",
     dbCredentials: {
-        url: env.DATABASE_URL
+        url: process.env.DATABASE_URL!
     },
     //schema
-    schema: "./src/db/schema.ts",
+    schema: "./src/db/schemas/schema.ts",
     //migrations
     out: "./migrations",
     //sql verbose logging

@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 
-import { users } from "./Users";
-import { reviews } from "./Reviews";
-import { review_answers } from "./ReviewsAnswers";
+import { users } from "./UsersSchema";
+import { reviews } from "./ReviewsSchema";
+import { review_answers } from "./ReviewsAnswersSchema";
 
 /** Relaciones de `reviews`: pertenece a un reviewer y un seller (ambos usuarios), tiene muchas respuestas */
 export const reviews_relations = relations(reviews, ({ one, many }) => ({

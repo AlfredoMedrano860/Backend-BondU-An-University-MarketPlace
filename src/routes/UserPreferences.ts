@@ -10,13 +10,13 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const preferenceIdSchema = z.object({
-    id: z.string().uuid(),
+const getUserPreferencesByIdSchema = z.object({
+    id: z.uuid(),
 });
 
 /** Valida el body para crear preferencias de usuario */
 const createUserPreferencesSchema = z.object({
-    user_id: z.string().uuid(),
+    user_id: z.uuid(),
     notifications: z.boolean().optional(),
     language: z.string().optional(),
 });
@@ -47,7 +47,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del registro de preferencias
  * @returns Las preferencias encontradas, 404 si no existen, o 500 en error
  */
-router.get("/:id", validateParams(preferenceIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getUserPreferencesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .select()
@@ -90,7 +90,7 @@ router.post("/", validateBody(createUserPreferencesSchema), async (req, res) => 
  * @param body - `notifications` y/o `language` a actualizar
  * @returns Las preferencias actualizadas, 404 si no existen, o 500 en error
  */
-router.put("/:id", validateParams(preferenceIdSchema), validateBody(updateUserPreferencesSchema), async (req, res) => {
+router.put("/:id", validateParams(getUserPreferencesByIdSchema), validateBody(updateUserPreferencesSchema), async (req, res) => {
         try {
             const data = await db
                 .update(user_preferences)
@@ -115,7 +115,7 @@ router.put("/:id", validateParams(preferenceIdSchema), validateBody(updateUserPr
  * @param id - UUID del registro de preferencias a eliminar
  * @returns Mensaje de confirmacion, 404 si no existen, o 500 en error
  */
-router.delete("/:id", validateParams(preferenceIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getUserPreferencesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .delete(user_preferences)

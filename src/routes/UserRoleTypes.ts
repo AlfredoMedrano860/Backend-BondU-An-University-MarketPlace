@@ -10,8 +10,8 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const roleTypeIdSchema = z.object({
-    id: z.string().uuid(),
+const getUserRoleTypesByIdSchema = z.object({
+    id: z.uuid(),
 });
 
 /** Valida el body para crear un tipo de rol */
@@ -44,7 +44,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del tipo de rol
  * @returns El tipo de rol encontrado, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(roleTypeIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getUserRoleTypesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .select()
@@ -87,7 +87,7 @@ router.post("/", validateBody(createRoleTypeSchema), async (req, res) => {
  * @param body - `role_name` a actualizar
  * @returns El tipo de rol actualizado, 404 si no existe, o 500 en error
  */
-router.put("/:id", validateParams(roleTypeIdSchema), validateBody(updateRoleTypeSchema), async (req, res) => {
+router.put("/:id", validateParams(getUserRoleTypesByIdSchema), validateBody(updateRoleTypeSchema), async (req, res) => {
         try {
             const data = await db
                 .update(user_role_types)
@@ -112,7 +112,7 @@ router.put("/:id", validateParams(roleTypeIdSchema), validateBody(updateRoleType
  * @param id - UUID del tipo de rol a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(roleTypeIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getUserRoleTypesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .delete(user_role_types)

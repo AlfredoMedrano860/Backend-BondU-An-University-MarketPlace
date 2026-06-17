@@ -9,13 +9,13 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const notificationIdSchema = z.object({
-  id: z.string().uuid(),
+const getNotificationsByIdSchema = z.object({
+  id: z.uuid(),
 });
 
 /** Valida el body para crear una notificacion */
 const createNotificationSchema = z.object({
-  notification_type_id: z.string().uuid(),
+  notification_type_id: z.uuid(),
   is_read: z.boolean().optional(),
   read_at: z.iso.datetime().optional(),
 });
@@ -46,7 +46,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID de la notificacion
  * @returns La notificacion encontrada, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(notificationIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getNotificationsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .select()
@@ -89,7 +89,7 @@ router.post("/", validateBody(createNotificationSchema), async (req, res) => {
  * @param body - `is_read` y/o `read_at`
  * @returns La notificacion actualizada, 404 si no existe, o 500 en error
  */
-router.put("/:id", validateParams(notificationIdSchema), validateBody(updateNotificationSchema), async (req, res) => {
+router.put("/:id", validateParams(getNotificationsByIdSchema), validateBody(updateNotificationSchema), async (req, res) => {
     try {
       const data = await db
         .update(notifications)
@@ -114,7 +114,7 @@ router.put("/:id", validateParams(notificationIdSchema), validateBody(updateNoti
  * @param id - UUID de la notificacion a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(notificationIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getNotificationsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .delete(notifications)

@@ -10,13 +10,13 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const statsIdSchema = z.object({
-    id: z.string().uuid(),
+const getUserStatsByIdSchema = z.object({
+    id: z.uuid(),
 });
 
 /** Valida el body para crear estadisticas de usuario */
 const createUserStatsSchema = z.object({
-    user_id: z.string().uuid(),
+    user_id: z.uuid(),
     rating_avg: z.string().optional(),
     review_count: z.number().int().nonnegative().optional(),
     sales_count: z.number().int().nonnegative().optional(),
@@ -49,7 +49,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del registro de estadisticas
  * @returns Las estadisticas encontradas, 404 si no existen, o 500 en error
  */
-router.get("/:id", validateParams(statsIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getUserStatsByIdSchema), async (req, res) => {
     try {
         const data = await db
             .select()
@@ -92,7 +92,7 @@ router.post("/", validateBody(createUserStatsSchema), async (req, res) => {
  * @param body - `rating_avg`, `review_count` y/o `sales_count` a actualizar
  * @returns Las estadisticas actualizadas, 404 si no existen, o 500 en error
  */
-router.put("/:id", validateParams(statsIdSchema), validateBody(updateUserStatsSchema), async (req, res) => {
+router.put("/:id", validateParams(getUserStatsByIdSchema), validateBody(updateUserStatsSchema), async (req, res) => {
         try {
             const data = await db
                 .update(user_stats)
@@ -117,7 +117,7 @@ router.put("/:id", validateParams(statsIdSchema), validateBody(updateUserStatsSc
  * @param id - UUID del registro de estadisticas a eliminar
  * @returns Mensaje de confirmacion, 404 si no existen, o 500 en error
  */
-router.delete("/:id", validateParams(statsIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getUserStatsByIdSchema), async (req, res) => {
     try {
         const data = await db
             .delete(user_stats)

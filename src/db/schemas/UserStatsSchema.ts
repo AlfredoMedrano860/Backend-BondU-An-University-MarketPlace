@@ -1,9 +1,8 @@
 import { pgTable, uuid, timestamp, integer, numeric } from "drizzle-orm/pg-core";
 
-import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { users } from "./Users";
+import { users } from "./UsersSchema";
 
 /** Estadisticas de actividad del usuario: calificacion promedio, ventas y resenas */
 export const user_stats = pgTable("user_stats", {
@@ -14,17 +13,6 @@ export const user_stats = pgTable("user_stats", {
     sales_count: integer("sales_count").default(0),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
-
-/** Relacion de `user_stats`: pertenece a un usuario */
-export const user_stats_relations = relations(
-    user_stats,
-    ({ one }) => ({
-        user: one(users, {
-            fields: [user_stats.user_id],
-            references: [users.id],
-        }),
-    })
-);
 
 /** Tipo inferido de la fila completa de `user_stats` */
 export type UserStats = typeof user_stats.$inferSelect;

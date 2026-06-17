@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { users, insert_user_schema, update_user_schema } from "../db/schemas/Users";
+import { users, insert_user_schema, update_user_schema } from "../db/schemas/UsersSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 import {login, register} from '../controllers/userController';
 

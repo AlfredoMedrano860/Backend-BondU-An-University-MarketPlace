@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { eq } from "drizzle-orm";
 import { db } from "../db/connection";
-import { product_categories } from "../db/schemas/ProductCategories";
+import { product_categories } from "../db/schemas/ProductCategoriesSchema";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
 

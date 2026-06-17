@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { db } from "../db/connection";
-import { users } from "../db/schemas/Users";
+import { users } from "../db/schemas/UsersSchema";
 import { hashPassword, comparePasswords } from "../utils/passwords";
 import { generateToken } from "../utils/jwt";
 import { eq } from 'drizzle-orm';

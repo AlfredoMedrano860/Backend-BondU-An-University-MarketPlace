@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { reviews } from "../db/schemas/Reviews";
+import { reviews } from "../db/schemas/ReviewsSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 
 /** Router para reseñas entre usuarios. Montado en `/api/reviews` */

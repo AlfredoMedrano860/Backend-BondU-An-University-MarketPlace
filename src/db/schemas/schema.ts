@@ -1,24 +1,23 @@
 /** Punto de entrada unificado para todos los schemas. Usar este archivo para imports limpios en el resto del proyecto. */
 
-export * from "./ProductSchemas";
-export * from "./ProductCategories";
-export * from "./ProductConditions";
-export * from "./ProductStatus";
-export * from "./RelationCategory";
-export * from "./RelationCondition";
-export * from "./RelationStatus";
-export * from "./RelationBetween";
+export * from "./ProductsSchema";
+export * from "./ProductCategoriesSchema";
+export * from "./ProductConditionsSchema";
+export * from "./ProductStatusSchema";
+export * from "./ProductImagesSchema";
+export * from "./RelationProductsSchema";
 
-export * from "./NotificatioSchemas";
-export * from "./NotificationsTypes";
-export * from "./RelationNotifications";
+export * from "./NotificationsSchema";
+export * from "./NotificationTypesSchema";
+export * from "./RelationNotificationsSchema";
 
-export * from "./Users";
-export * from "./UserStats";
-export * from "./UserPreferences";
-export * from "./UserRoles";
-export * from "./UserRoleTypes";
+export * from "./UsersSchema";
+export * from "./UserStatsSchema";
+export * from "./UserPreferencesSchema";
+export * from "./UserRolesSchema";
+export * from "./UserRoleTypesSchema";
+export * from "./RelationUsersSchema";
 
-export * from "./Reviews";
-export * from "./ReviewsAnswers";
-export * from "./RelationReviews";
+export * from "./ReviewsSchema";
+export * from "./ReviewsAnswersSchema";
+export * from "./RelationReviewsSchema";

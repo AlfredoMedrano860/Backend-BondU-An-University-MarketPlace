@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { user_roles } from "../db/schemas/UserRoles";
+import { user_roles } from "../db/schemas/UserRolesSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 
 /** Router para la asignacion de roles a usuarios. Montado en `/api/users/roles` */

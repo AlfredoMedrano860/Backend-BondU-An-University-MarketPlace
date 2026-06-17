@@ -1,6 +1,6 @@
 import { db } from "../connection";
-import { notifications } from "../schemas/NotificatioSchemas";
-import { notification_types } from "../schemas/NotificationsTypes";
+import { notifications } from "../schemas/NotificationsSchema";
+import { notification_types } from "../schemas/NotificationTypesSchema";
 
 /**
  * Puebla la base de datos con tipos de notificacion y notificaciones de prueba.

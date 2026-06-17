@@ -37,7 +37,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.8.0",
     "custom-env": "^2.0.6",
-    "drizzle-kit": "^0.31.10",
+    "drizzle-kit": "^0.19.1",
     "morgan": "^1.10.1",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
@@ -46,7 +46,7 @@
   },
   "overrides": {
     "@esbuild-kit/core-utils": {
-      "esbuild": "0.25.0"
+      "esbuild": "0.28.1"
     }
   }
 }

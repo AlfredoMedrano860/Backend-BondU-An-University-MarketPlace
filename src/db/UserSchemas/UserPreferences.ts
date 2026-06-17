@@ -4,7 +4,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { users } from "./Users";
 
-export const user_preferences = pgTable("user_preferences",{
+export const user_preferences = pgTable("user_preferences", {
     preference_id: uuid("preference_id").primaryKey().defaultRandom(),
     user_id: uuid("user_id").notNull().references(() => users.id),
 
@@ -17,9 +17,9 @@ export const user_preferences = pgTable("user_preferences",{
 export const user_preferences_relations = relations(
     user_preferences,
     ({ one }) => ({
-        user: one(users,{
-            fields:[user_preferences.user_id],
-            references:[users.id],
+        user: one(users, {
+            fields: [user_preferences.user_id],
+            references: [users.id],
         }),
     })
 );

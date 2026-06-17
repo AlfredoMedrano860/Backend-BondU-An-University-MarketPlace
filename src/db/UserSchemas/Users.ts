@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, boolean, integer, numeric} from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean, integer, numeric } from "drizzle-orm/pg-core";
 
 import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -8,26 +8,17 @@ import { user_preferences } from "./UserPreferences";
 import { user_roles } from "./UserRoles";
 
 export const users = pgTable("users", {
-    id: uuid("id")
-        .primaryKey()
-        .defaultRandom(),
-    username: text("username")
-        .notNull(),
-    email: text("email")
-        .notNull(),
-    password: text("password")
-        .notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
+    username: text("username").notNull(),
+    email: text("email").notNull(),
+    password: text("password").notNull(),
     avatar: text("avatar"),
     phone: text("phone"),
     location: text("location"),
     university: text("university"),
     career: text("career"),
-    created_at: timestamp("created_at")
-        .defaultNow()
-        .notNull(),
-    updated_at: timestamp("updated_at")
-        .defaultNow()
-        .notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const user_relations = relations(

@@ -1,6 +1,6 @@
 import { db } from "../connection";
 
-import {  notification_types,  notifications} from "../ProductSchemas/NotificatioSchemas";
+import { notification_types, notifications } from "../ProductSchemas/NotificatioSchemas";
 
 const seed = async () => {
   const appStage = process.env.APP_STAGE;
@@ -26,21 +26,21 @@ const seed = async () => {
 
     const insertedTypes =
       await db.insert(notification_types)
-      .values([
-        {
-          notification_type_name:
-            "SYSTEM",
-        },
-        {
-          notification_type_name:
-            "PRODUCT",
-        },
-        {
-          notification_type_name:
-            "ORDER",
-        },
-      ])
-      .returning();
+        .values([
+          {
+            notification_type_name:
+              "SYSTEM",
+          },
+          {
+            notification_type_name:
+              "PRODUCT",
+          },
+          {
+            notification_type_name:
+              "ORDER",
+          },
+        ])
+        .returning();
 
     await db.insert(notifications)
       .values([

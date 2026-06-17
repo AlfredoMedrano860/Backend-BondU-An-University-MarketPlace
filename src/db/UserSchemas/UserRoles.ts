@@ -5,7 +5,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { users } from "./Users";
 import { user_role_types } from "./UserRoleTypes";
 
-export const user_roles = pgTable("user_roles",{
+export const user_roles = pgTable("user_roles", {
     role_id: uuid("role_id").primaryKey().defaultRandom(),
 
     user_id: uuid("user_id")
@@ -22,14 +22,14 @@ export const user_roles = pgTable("user_roles",{
 export const user_roles_relations = relations(
     user_roles,
     ({ one }) => ({
-        user: one(users,{
-            fields:[user_roles.user_id],
-            references:[users.id],
+        user: one(users, {
+            fields: [user_roles.user_id],
+            references: [users.id],
         }),
 
-        role: one(user_role_types,{
-            fields:[user_roles.role_type_id],
-            references:[user_role_types.role_type_id],
+        role: one(user_role_types, {
+            fields: [user_roles.role_type_id],
+            references: [user_role_types.role_type_id],
         }),
     })
 );

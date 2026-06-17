@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 import * as productSchema from "./ProductSchemas/ProductSchemas";
-import * as notificationSchema from "./ProductSchemas/NotificatioSchemas";
+import * as notificationSchema from "./NotificationSchemas/NotificatioSchemas";
 
 import * as usersSchema from "./UserSchemas/Users";
 import * as userStatsSchema from "./UserSchemas/UserStats";
@@ -26,7 +26,6 @@ const createPool = () => {
 const schemaTotal = {
     ...productSchema,
     ...notificationSchema,
-
     ...usersSchema,
     ...userStatsSchema,
     ...userPreferencesSchema,

@@ -11,8 +11,8 @@ import {login, register} from '../controllers/userController';
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const userIdSchema = z.object({
-    id: z.string().uuid(),
+const getUsersByIdSchema = z.object({
+    id: z.uuid(),
 });
 
 /** Valida las credenciales del body para el login */
@@ -43,7 +43,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del usuario
  * @returns El usuario encontrado, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(userIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getUsersByIdSchema), async (req, res) => {
         try {
             const data = await db
                 .select()
@@ -95,7 +95,7 @@ router.post("/", validateBody(insert_user_schema), async (req, res) => {
  * @returns El usuario actualizado, 404 si no existe, o 500 en error
  */
 router.put("/:id",
-    validateParams(userIdSchema),
+    validateParams(getUsersByIdSchema),
     validateBody(update_user_schema),
     async (req, res) => {
         try {
@@ -127,7 +127,7 @@ router.put("/:id",
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
 router.delete("/:id",
-    validateParams(userIdSchema),
+    validateParams(getUsersByIdSchema),
     async (req, res) => {
         try {
             const data = await db

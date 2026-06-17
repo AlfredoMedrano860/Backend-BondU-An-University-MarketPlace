@@ -9,8 +9,8 @@ import { products } from "../db/schemas/ProductSchemas";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const productIdSchema = z.object({
-  id: z.string().uuid(),
+const getProductsByIdSchema = z.object({
+  id: z.uuid(),
 });
 
 /** Valida el body para crear un producto */
@@ -47,7 +47,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del producto
  * @returns El producto encontrado, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(productIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getProductsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .select()
@@ -90,7 +90,7 @@ router.post("/", validateBody(createProductSchema), async (req, res) => {
  * @param body - Campos a actualizar: `name`, `description`, `price`
  * @returns El producto actualizado, 404 si no existe, o 500 en error
  */
-router.put("/:id", validateParams(productIdSchema), validateBody(updateProductSchema), async (req, res) => {
+router.put("/:id", validateParams(getProductsByIdSchema), validateBody(updateProductSchema), async (req, res) => {
     try {
       const data = await db
         .update(products)
@@ -115,7 +115,7 @@ router.put("/:id", validateParams(productIdSchema), validateBody(updateProductSc
  * @param id - UUID del producto a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(productIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getProductsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .delete(products)

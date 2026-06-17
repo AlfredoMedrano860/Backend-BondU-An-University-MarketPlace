@@ -10,14 +10,14 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const roleIdSchema = z.object({
-    id: z.string().uuid(),
+const getUserRolesByIdSchema = z.object({
+    id: z.uuid(),
 });
 
 /** Valida el body para asignar un rol a un usuario */
 const createUserRoleSchema = z.object({
-    user_id: z.string().uuid(),
-    role_type_id: z.string().uuid(),
+    user_id: z.uuid(),
+    role_type_id: z.uuid(),
 });
 
 /**
@@ -40,7 +40,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID de la asignacion de rol
  * @returns La asignacion encontrada, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(roleIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getUserRolesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .select()
@@ -82,7 +82,7 @@ router.post("/", validateBody(createUserRoleSchema), async (req, res) => {
  * @param id - UUID de la asignacion a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(roleIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getUserRolesByIdSchema), async (req, res) => {
     try {
         const data = await db
             .delete(user_roles)

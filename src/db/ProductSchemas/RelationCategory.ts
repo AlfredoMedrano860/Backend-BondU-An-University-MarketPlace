@@ -3,6 +3,7 @@ import { pgTable, uuid } from "drizzle-orm/pg-core";
 import { products } from "./ProductSchemas";
 import { product_categories } from "./ProductCategories";
 
+/** Tabla intermedia que relaciona productos con sus categorias (muchos-a-muchos) */
 export const product_category_relation = pgTable(
   "product_category_relation",
   {

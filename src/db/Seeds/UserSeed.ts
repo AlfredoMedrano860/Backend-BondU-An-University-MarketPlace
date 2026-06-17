@@ -6,6 +6,10 @@ import { user_preferences } from "../UserSchemas/UserPreferences";
 import { user_roles } from "../UserSchemas/UserRoles";
 import { user_role_types } from "../UserSchemas/UserRoleTypes";
 
+/**
+ * Puebla la base de datos con usuarios de prueba, incluyendo sus stats, preferencias y roles.
+ * Solo debe ejecutarse en entornos de desarrollo o staging.
+ */
 async function seedUsers() {
 
     console.log("Seeding users...");

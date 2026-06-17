@@ -1,7 +1,11 @@
 import { db } from "../connection";
+import { notifications } from "../NotificationSchemas/NotificatioSchemas";
+import { notification_types } from "../NotificationSchemas/NotificationsTypes";
 
-import { notification_types, notifications } from "../ProductSchemas/NotificatioSchemas";
-
+/**
+ * Puebla la base de datos con tipos de notificacion y notificaciones de prueba.
+ * Bloqueado en produccion mediante la variable de entorno `APP_STAGE`.
+ */
 const seed = async () => {
   const appStage = process.env.APP_STAGE;
 

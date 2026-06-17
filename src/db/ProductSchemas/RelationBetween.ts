@@ -9,6 +9,7 @@ import { product_category_relation } from "../ProductSchemas/RelationCategory";
 import { product_conditions_relation } from "../ProductSchemas/RelationCondition";
 import { product_status_relation } from "../ProductSchemas/RelationStatus";
 
+/** Relacion de `products`: un producto tiene muchas categorias, condiciones y estados */
 export const product_relations = relations(
   products,
   ({ many }) => ({
@@ -18,6 +19,7 @@ export const product_relations = relations(
   })
 );
 
+/** Relacion de `product_categories`: una categoria puede estar en muchos productos */
 export const category_relations = relations(
   product_categories,
   ({ many }) => ({
@@ -25,6 +27,7 @@ export const category_relations = relations(
   })
 );
 
+/** Relacion de `product_conditions`: una condicion puede aplicar a muchos productos */
 export const conditions_relations = relations(
   product_conditions,
   ({ many }) => ({
@@ -32,6 +35,7 @@ export const conditions_relations = relations(
   })
 );
 
+/** Relacion de `product_status`: un estado puede aplicar a muchos productos */
 export const status_relations = relations(
   product_status,
   ({ many }) => ({
@@ -39,41 +43,38 @@ export const status_relations = relations(
   })
 );
 
-export const product_category_relation_middle =
-  relations(product_category_relation, ({ one }) => ({
-    product: one(products, {
-      fields: [product_category_relation.product_id],
-      references: [products.product_id],
-    }),
+/** Relaciones de la tabla intermedia `product_category_relation` */
+export const product_category_relation_middle = relations(product_category_relation, ({ one }) => ({
+  product: one(products, {
+    fields: [product_category_relation.product_id],
+    references: [products.product_id],
+  }),
+  category: one(product_categories, {
+    fields: [product_category_relation.category_id],
+    references: [product_categories.category_id],
+  }),
+}));
 
-    category: one(product_categories, {
-      fields: [product_category_relation.category_id],
-      references: [product_categories.category_id],
-    }),
-  }));
+/** Relaciones de la tabla intermedia `product_conditions_relation` */
+export const product_conditions_relation_middle = relations(product_conditions_relation, ({ one }) => ({
+  product: one(products, {
+    fields: [product_conditions_relation.product_id],
+    references: [products.product_id],
+  }),
+  conditions: one(product_conditions, {
+    fields: [product_conditions_relation.conditions_id],
+    references: [product_conditions.condition_id],
+  }),
+}));
 
-  export const product_conditions_relation_middle =
-  relations(product_conditions_relation, ({ one }) => ({
-    product: one(products, {
-      fields: [product_conditions_relation.product_id],
-      references: [products.product_id],
-    }),
-
-    conditions: one(product_conditions, {
-      fields: [product_conditions_relation.conditions_id],
-      references: [product_conditions.condition_id],
-    }),
-  }));
-
-  export const product_status_relation_middle =
-  relations(product_status_relation, ({ one }) => ({
-    product: one(products, {
-      fields: [product_status_relation.product_id],
-      references: [products.product_id],
-    }),
-
-    status: one(product_status, {
-      fields: [product_status_relation.status_id],
-      references: [product_status.status_id],
-    }),
-  }));
+/** Relaciones de la tabla intermedia `product_status_relation` */
+export const product_status_relation_middle = relations(product_status_relation, ({ one }) => ({
+  product: one(products, {
+    fields: [product_status_relation.product_id],
+    references: [products.product_id],
+  }),
+  status: one(product_status, {
+    fields: [product_status_relation.status_id],
+    references: [product_status.status_id],
+  }),
+}));

@@ -5,12 +5,18 @@ import z from "zod";
 import { db } from "../../db/connection";
 import { users, insert_user_schema, update_user_schema } from "../../db/UserSchemas/Users";
 import { validateBody, validateParams } from "../../middleware/validations";
+import {login, register} from '../../db/controllers/userController';
 
 const router = Router();
 
 const userIdSchema = z.object({
     id: z.string().uuid(),
 });
+const loginSchema = z.object({
+    email: z.email(),
+    password: z.string().min(6, 'Password must be at least 6 characters long')
+});
+
 
 router.get("/", async (_, res) => {
     try {
@@ -117,4 +123,6 @@ router.delete("/:id",
     }
 );
 
+router.post("/login",validateBody(loginSchema), login)
+router.post("/register", validateBody(insert_user_schema), register);
 export default router;

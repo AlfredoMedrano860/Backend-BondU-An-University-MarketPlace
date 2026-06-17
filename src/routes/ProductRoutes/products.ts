@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { db } from "../../db/connection";
 import z from "zod";
-import {validateBody, validateParams, validateQuery} from "../../middleware/validations";
-import {products,product_categories, product_conditions, product_status} from "../../db/ProductSchemas/ProductSchemas";
+import { validateBody, validateParams, validateQuery } from "../../middleware/validations";
+import { products, product_categories, product_conditions, product_status } from "../../db/ProductSchemas/ProductSchemas";
 
 
 const router = Router();
@@ -27,36 +27,36 @@ router.get("/product", async (req, res) => {
   }
 });
 
-router.get("/product/:id", (req, res)=>{
+router.get("/product/:id", (req, res) => {
   return res.status(200).json({
-        ok: true,
-        message: "Perfil del usuario",
-        data: {
-            id :`${req.params.id}`
-        }
-    });
+    ok: true,
+    message: "Perfil del usuario",
+    data: {
+      id: `${req.params.id}`
+    }
+  });
 });
 
 router.post('/product', validateBody(createProductSchema), (req, res) => {
-   return res.status(201).json({
-        ok: true,
-        message: "Se ha añadido el usuario",
-        data: req.body
-    })
+  return res.status(201).json({
+    ok: true,
+    message: "Se ha añadido el usuario",
+    data: req.body
+  })
 });
 
 router.put('/product/:id', validateParams(productIdParamsSchema), validateBody(createProductSchema), (req, res) => {
-    return res.status(200).json({
-        ok: true,
-        message: `Usuario con ID ${req.params.id} se ha actualizado`,
-    });
+  return res.status(200).json({
+    ok: true,
+    message: `Usuario con ID ${req.params.id} se ha actualizado`,
+  });
 });
 
 router.delete('/product/:id', validateParams(productIdParamsSchema), (req, res) => {
-    return res.status(200).json({
-        ok: true,
-        message: `Usuario con ID ${req.params.id} se ha eliminado`,
-    });
+  return res.status(200).json({
+    ok: true,
+    message: `Usuario con ID ${req.params.id} se ha eliminado`,
+  });
 });
 
 //Product Cathegories

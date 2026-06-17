@@ -1,11 +1,11 @@
 import { db } from '../connection';
-import { products } from "../ProductSchemas/ProductSchemas";
-import { product_categories } from "../ProductSchemas/ProductCategories";
-import { product_conditions } from "../ProductSchemas/ProductConditions";
-import { product_status } from "../ProductSchemas/ProductStatus";
-import { product_category_relation } from "../ProductSchemas/RelationCategory";
-import { product_conditions_relation } from "../ProductSchemas/RelationCondition";
-import { product_status_relation } from "../ProductSchemas/RelationStatus";
+import { products } from "../schemas/ProductSchemas";
+import { product_categories } from "../schemas/ProductCategories";
+import { product_conditions } from "../schemas/ProductConditions";
+import { product_status } from "../schemas/ProductStatus";
+import { product_category_relation } from "../schemas/RelationCategory";
+import { product_conditions_relation } from "../schemas/RelationCondition";
+import { product_status_relation } from "../schemas/RelationStatus";
 
 /**
  * Puebla la base de datos con productos, categorias, condiciones y estados de prueba.

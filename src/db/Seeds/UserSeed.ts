@@ -1,10 +1,10 @@
 import { db } from "../connection";
 
-import { users } from "../UserSchemas/Users";
-import { user_stats } from "../UserSchemas/UserStats";
-import { user_preferences } from "../UserSchemas/UserPreferences";
-import { user_roles } from "../UserSchemas/UserRoles";
-import { user_role_types } from "../UserSchemas/UserRoleTypes";
+import { users } from "../schemas/Users";
+import { user_stats } from "../schemas/UserStats";
+import { user_preferences } from "../schemas/UserPreferences";
+import { user_roles } from "../schemas/UserRoles";
+import { user_role_types } from "../schemas/UserRoleTypes";
 
 /**
  * Puebla la base de datos con usuarios de prueba, incluyendo sus stats, preferencias y roles.
@@ -101,9 +101,13 @@ async function seedUsers() {
     console.log("Users seeded successfully");
 }
 
-seedUsers()
-    .then(() => process.exit(0))
-    .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
+if (require.main === module) {
+    seedUsers()
+        .then(() => process.exit(0))
+        .catch(error => {
+            console.error(error);
+            process.exit(1);
+        });
+}
+
+export default seedUsers;

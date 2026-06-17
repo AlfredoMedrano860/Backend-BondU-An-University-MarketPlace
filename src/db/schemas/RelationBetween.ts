@@ -1,13 +1,13 @@
 import { relations } from "drizzle-orm";
 
-import { products } from "../ProductSchemas/ProductSchemas";
-import { product_categories } from "../ProductSchemas/ProductCategories";
-import { product_conditions } from "../ProductSchemas/ProductConditions";
-import { product_status } from "../ProductSchemas/ProductStatus";
+import { products } from "./ProductSchemas";
+import { product_categories } from "./ProductCategories";
+import { product_conditions } from "./ProductConditions";
+import { product_status } from "./ProductStatus";
 
-import { product_category_relation } from "../ProductSchemas/RelationCategory";
-import { product_conditions_relation } from "../ProductSchemas/RelationCondition";
-import { product_status_relation } from "../ProductSchemas/RelationStatus";
+import { product_category_relation } from "./RelationCategory";
+import { product_conditions_relation } from "./RelationCondition";
+import { product_status_relation } from "./RelationStatus";
 
 /** Relacion de `products`: un producto tiene muchas categorias, condiciones y estados */
 export const product_relations = relations(

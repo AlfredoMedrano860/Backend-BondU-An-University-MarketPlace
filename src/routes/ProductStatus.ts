@@ -9,8 +9,8 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const statusIdSchema = z.object({
-  id: z.string().uuid(),
+const getProductStatusByIdSchema = z.object({
+  id: z.uuid(),
 });
 
 /** Valida el body para crear un estado */
@@ -43,7 +43,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del estado
  * @returns El estado encontrado, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(statusIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getProductStatusByIdSchema), async (req, res) => {
   try {
     const data = await db
       .select()
@@ -86,7 +86,7 @@ router.post("/", validateBody(createStatusSchema), async (req, res) => {
  * @param body - `name_status` a actualizar
  * @returns El estado actualizado, 404 si no existe, o 500 en error
  */
-router.put("/:id", validateParams(statusIdSchema), validateBody(updateStatusSchema), async (req, res) => {
+router.put("/:id", validateParams(getProductStatusByIdSchema), validateBody(updateStatusSchema), async (req, res) => {
     try {
       const data = await db
         .update(product_status)
@@ -111,7 +111,7 @@ router.put("/:id", validateParams(statusIdSchema), validateBody(updateStatusSche
  * @param id - UUID del estado a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(statusIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getProductStatusByIdSchema), async (req, res) => {
   try {
     const data = await db
       .delete(product_status)

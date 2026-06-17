@@ -18,3 +18,7 @@ export * from "./UserStats";
 export * from "./UserPreferences";
 export * from "./UserRoles";
 export * from "./UserRoleTypes";
+
+export * from "./Reviews";
+export * from "./ReviewsAnswers";
+export * from "./RelationReviews";

@@ -9,8 +9,8 @@ import { validateBody, validateParams } from "../middleware/validations";
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
-const conditionIdSchema = z.object({
-  id: z.string().uuid(),
+const getProductConditionsByIdSchema = z.object({
+  id: z.uuid(),
 });
 
 /** Valida el body para crear una condicion */
@@ -43,7 +43,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID de la condicion
  * @returns La condicion encontrada, 404 si no existe, o 500 en error
  */
-router.get("/:id", validateParams(conditionIdSchema), async (req, res) => {
+router.get("/:id", validateParams(getProductConditionsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .select()
@@ -86,7 +86,7 @@ router.post("/", validateBody(createConditionSchema), async (req, res) => {
  * @param body - `name_condition` a actualizar
  * @returns La condicion actualizada, 404 si no existe, o 500 en error
  */
-router.put("/:id", validateParams(conditionIdSchema), validateBody(updateConditionSchema), async (req, res) => {
+router.put("/:id", validateParams(getProductConditionsByIdSchema), validateBody(updateConditionSchema), async (req, res) => {
     try {
       const data = await db
         .update(product_conditions)
@@ -111,7 +111,7 @@ router.put("/:id", validateParams(conditionIdSchema), validateBody(updateConditi
  * @param id - UUID de la condicion a eliminar
  * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
  */
-router.delete("/:id", validateParams(conditionIdSchema), async (req, res) => {
+router.delete("/:id", validateParams(getProductConditionsByIdSchema), async (req, res) => {
   try {
     const data = await db
       .delete(product_conditions)

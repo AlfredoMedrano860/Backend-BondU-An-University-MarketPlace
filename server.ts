@@ -15,6 +15,9 @@ import productStatusRoutes from "./src/routes/ProductStatus";
 import notificationRoutes from "./src/routes/Notifications";
 import notificationTypeRoutes from "./src/routes/NotificationTypes";
 
+import reviewRoutes from "./src/routes/Reviews";
+import reviewAnswersRoutes from "./src/routes/ReviewsAnswers";
+
 // Sub-rutas de usuarios antes del router principal para evitar conflicto con /:id
 app.use("/api/users/role-types", userRoleTypeRoutes);
 app.use("/api/users/roles", userRoleRoutes);
@@ -30,6 +33,10 @@ app.use("/api/products", productRoutes);
 
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/notification-types", notificationTypeRoutes);
+
+// Sub-ruta de respuestas antes del router principal de reseñas para evitar conflicto con /:id
+app.use("/api/reviews/answers", reviewAnswersRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.get("/", (_, res) => {
     res.json({

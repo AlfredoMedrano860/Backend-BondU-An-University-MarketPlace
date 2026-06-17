@@ -1,11 +1,13 @@
 import seedProducts from "./ProductSeeds";
 import seedUsers from "./UserSeed";
 import seedNotifications from "./NotificationsSeeds";
+import seedReviews from "./ReviewsSeed";
 
 const seed = async () => {
     await seedProducts();
     await seedUsers();
     await seedNotifications();
+    await seedReviews();
 };
 
 seed()

@@ -2,10 +2,10 @@ import { Router } from "express";
 import { eq } from "drizzle-orm";
 import z from "zod";
 
-import { db } from "../../db/connection";
-import { users, insert_user_schema, update_user_schema } from "../../db/UserSchemas/Users";
-import { validateBody, validateParams } from "../../middleware/validations";
-import {login, register} from '../../db/controllers/userController';
+import { db } from "../db/connection";
+import { users, insert_user_schema, update_user_schema } from "../db/schemas/Users";
+import { validateBody, validateParams } from "../middleware/validations";
+import {login, register} from '../controllers/userController';
 
 /** Router para el CRUD de usuarios y autenticacion. Prefijo: `/users` */
 const router = Router();
@@ -43,9 +43,7 @@ router.get("/", async (_, res) => {
  * @param id - UUID del usuario
  * @returns El usuario encontrado, 404 si no existe, o 500 en error
  */
-router.get("/:id",
-    validateParams(userIdSchema),
-    async (req, res) => {
+router.get("/:id", validateParams(userIdSchema), async (req, res) => {
         try {
             const data = await db
                 .select()
@@ -73,9 +71,7 @@ router.get("/:id",
  * @param body - Datos del usuario validados con `insert_user_schema`
  * @returns El usuario creado con status 201, o 500 en error
  */
-router.post("/",
-    validateBody(insert_user_schema),
-    async (req, res) => {
+router.post("/", validateBody(insert_user_schema), async (req, res) => {
         try {
             const data = await db
                 .insert(users)

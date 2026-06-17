@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { db } from "../connection";
-import { users } from "../UserSchemas/Users";
-import { hashPassword, comparePasswords } from "../../utils/passwords";
-import { generateToken } from "../../utils/jwt";
+import { db } from "../db/connection";
+import { users } from "../db/schemas/Users";
+import { hashPassword, comparePasswords } from "../utils/passwords";
+import { generateToken } from "../utils/jwt";
 import { eq } from 'drizzle-orm';
 
 /**

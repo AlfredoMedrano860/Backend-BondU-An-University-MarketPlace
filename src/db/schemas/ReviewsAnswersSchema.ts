@@ -1,7 +1,7 @@
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { reviews } from "./Reviews";
+import { reviews } from "./ReviewsSchema";
 
 /** Tabla de respuestas del seller a una reseña */
 export const review_answers = pgTable("reviews_answers", {

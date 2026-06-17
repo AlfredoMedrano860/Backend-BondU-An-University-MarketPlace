@@ -1,10 +1,10 @@
 import { db } from "../connection";
 
-import { users } from "../schemas/Users";
-import { user_stats } from "../schemas/UserStats";
-import { user_preferences } from "../schemas/UserPreferences";
-import { user_roles } from "../schemas/UserRoles";
-import { user_role_types } from "../schemas/UserRoleTypes";
+import { users } from "../schemas/UsersSchema";
+import { user_stats } from "../schemas/UserStatsSchema";
+import { user_preferences } from "../schemas/UserPreferencesSchema";
+import { user_roles } from "../schemas/UserRolesSchema";
+import { user_role_types } from "../schemas/UserRoleTypesSchema";
 
 /**
  * Puebla la base de datos con usuarios de prueba, incluyendo sus stats, preferencias y roles.

@@ -1,22 +1,22 @@
 import app from "./src/app";
 import env from "./env";
 
-import userRoutes from "./src/routes/UserRoutes";
-import userRoleTypeRoutes from "./src/routes/UserRoleTypes";
-import userRoleRoutes from "./src/routes/UserRoles";
-import userPreferencesRoutes from "./src/routes/UserPreferences";
-import userStatsRoutes from "./src/routes/UserStats";
+import userRoutes from "./src/routes/UsersRoutes";
+import userRoleTypeRoutes from "./src/routes/UserRoleTypesRoutes";
+import userRoleRoutes from "./src/routes/UserRolesRoutes";
+import userPreferencesRoutes from "./src/routes/UserPreferencesRoutes";
+import userStatsRoutes from "./src/routes/UserStatsRoutes";
 
-import productRoutes from "./src/routes/Products";
-import productCategoriesRoutes from "./src/routes/ProductCategories";
-import productConditionsRoutes from "./src/routes/ProductConditions";
-import productStatusRoutes from "./src/routes/ProductStatus";
+import productRoutes from "./src/routes/ProductsRoutes";
+import productCategoriesRoutes from "./src/routes/ProductCategoriesRoutes";
+import productConditionsRoutes from "./src/routes/ProductConditionsRoutes";
+import productStatusRoutes from "./src/routes/ProductStatusRoutes";
 
-import notificationRoutes from "./src/routes/Notifications";
-import notificationTypeRoutes from "./src/routes/NotificationTypes";
+import notificationRoutes from "./src/routes/NotificationsRoutes";
+import notificationTypeRoutes from "./src/routes/NotificationTypesRoutes";
 
-import reviewRoutes from "./src/routes/Reviews";
-import reviewAnswersRoutes from "./src/routes/ReviewsAnswers";
+import reviewRoutes from "./src/routes/ReviewsRoutes";
+import reviewAnswersRoutes from "./src/routes/ReviewsAnswersRoutes";
 
 // Sub-rutas de usuarios antes del router principal para evitar conflicto con /:id
 app.use("/api/users/role-types", userRoleTypeRoutes);

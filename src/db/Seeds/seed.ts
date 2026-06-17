@@ -1,6 +1,6 @@
-import seedProducts from "./ProductSeeds";
-import seedUsers from "./UserSeed";
-import seedNotifications from "./NotificationsSeeds";
+import seedProducts from "./ProductsSeed";
+import seedUsers from "./UsersSeed";
+import seedNotifications from "./NotificationsSeed";
 import seedReviews from "./ReviewsSeed";
 
 const seed = async () => {

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { user_stats } from "../db/schemas/UserStats";
+import { user_stats } from "../db/schemas/UserStatsSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 
 /** Router para las estadisticas de usuario. Montado en `/api/users/stats` */

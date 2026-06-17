@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/connection";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
-import { products } from "../db/schemas/ProductSchemas";
+import { products } from "../db/schemas/ProductsSchema";
 
 /** Router para el CRUD de productos. Montado en `/api/products` */
 const router = Router();
@@ -18,6 +18,8 @@ const createProductSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().int().positive(),
+  condition_id: z.uuid().optional(),
+  status_id: z.uuid().optional(),
 });
 
 /** Valida el body para actualizar un producto (todos los campos opcionales) */
@@ -25,6 +27,8 @@ const updateProductSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().min(1).optional(),
   price: z.number().int().positive().optional(),
+  condition_id: z.uuid().optional(),
+  status_id: z.uuid().optional(),
 });
 
 /**

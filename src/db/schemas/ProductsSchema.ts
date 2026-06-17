@@ -1,5 +1,7 @@
 import { pgTable, uuid, text, timestamp, integer } from "drizzle-orm/pg-core";
-import {createInsertSchema,createSelectSchema} from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { product_conditions } from "./ProductConditionsSchema";
+import { product_status } from "./ProductStatusSchema";
 
 /** Tabla principal de productos publicados en el marketplace */
 export const products = pgTable("products", {
@@ -7,6 +9,8 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(),
+  condition_id: uuid("condition_id").references(() => product_conditions.condition_id),
+  status_id: uuid("status_id").references(() => product_status.status_id),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });

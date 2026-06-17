@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { db } from "../db/connection";
-import { user_role_types } from "../db/schemas/UserRoleTypes";
+import { user_role_types } from "../db/schemas/UserRoleTypesSchema";
 import { validateBody, validateParams } from "../middleware/validations";
 
 /** Router para el catalogo de tipos de rol (seller, buyer, admin). Montado en `/api/users/role-types` */

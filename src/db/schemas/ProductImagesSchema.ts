@@ -7,8 +7,12 @@ import { products } from "./ProductsSchema";
 /** Imagenes asociadas a un producto. Maximo 4 por producto, solo una puede ser primaria */
 export const product_images = pgTable("product_images", {
     id: uuid("id").primaryKey().defaultRandom(),
+    /** FK hacia `products`. Un producto puede tener hasta 4 imagenes */
     product_id: uuid("product_id").notNull().references(() => products.product_id),
+    /** URL publica de la imagen, servida desde `/uploads/` por express.static */
     url: text("url").notNull(),
+    /** Indica si esta es la imagen principal del producto.
+     *  Solo una imagen por producto puede tener `true` (enforced por unique index parcial) */
     is_primary: boolean("is_primary").notNull().default(false),
     created_at: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [

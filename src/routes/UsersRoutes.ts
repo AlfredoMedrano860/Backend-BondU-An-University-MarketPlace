@@ -1,148 +1,17 @@
 import { Router } from "express";
-import { eq } from "drizzle-orm";
 import z from "zod";
-
-import { db } from "../db/connection";
-import { users, insert_user_schema, update_user_schema } from "../db/schemas/UsersSchema";
 import { validateBody, validateParams } from "../middleware/validations";
+import { insert_user_schema, update_user_schema } from "../db/schemas/UsersSchema";
+import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from "../controllers/usersController";
 
-/** Router para el CRUD de usuarios. Prefijo: `/users` */
 const router = Router();
 
-/** Valida que el parametro `id` de la ruta sea un UUID valido */
-const getUsersByIdSchema = z.object({
-    id: z.uuid(),
-});
+const idSchema = z.object({ id: z.uuid() });
 
-/**
- * Obtiene la lista de todos los usuarios registrados.
- * @route GET /users
- * @returns Lista de usuarios o error 500
- */
-router.get("/", async (_, res) => {
-    try {
-        const data = await db.select().from(users);
-        return res.status(200).json(data);
-    } catch {
-        return res.status(500).json({
-            message: "Internal server error",
-        });
-    }
-});
-
-/**
- * Obtiene un usuario por su ID.
- * @route GET /users/:id
- * @param id - UUID del usuario
- * @returns El usuario encontrado, 404 si no existe, o 500 en error
- */
-router.get("/:id", validateParams(getUsersByIdSchema), async (req, res) => {
-        try {
-            const data = await db
-                .select()
-                .from(users)
-                .where(eq(users.id, req.params.id as string));
-
-            if (!data.length) {
-                return res.status(404).json({
-                    message: "User not found",
-                });
-            }
-
-            return res.status(200).json(data[0]);
-        } catch {
-            return res.status(500).json({
-                message: "Internal server error",
-            });
-        }
-    }
-);
-
-/**
- * Crea un nuevo usuario.
- * @route POST /users
- * @param body - Datos del usuario validados con `insert_user_schema`
- * @returns El usuario creado con status 201, o 500 en error
- */
-router.post("/", validateBody(insert_user_schema), async (req, res) => {
-        try {
-            const data = await db
-                .insert(users)
-                .values(req.body)
-                .returning();
-
-            return res.status(201).json(data[0]);
-        } catch {
-            return res.status(500).json({
-                message: "Internal server error",
-            });
-        }
-    }
-);
-
-/**
- * Actualiza los datos de un usuario existente.
- * @route PUT /users/:id
- * @param id - UUID del usuario a actualizar
- * @param body - Campos a actualizar validados con `update_user_schema`
- * @returns El usuario actualizado, 404 si no existe, o 500 en error
- */
-router.put("/:id",
-    validateParams(getUsersByIdSchema),
-    validateBody(update_user_schema),
-    async (req, res) => {
-        try {
-            const data = await db
-                .update(users)
-                .set(req.body)
-                .where(eq(users.id, req.params.id as string))
-                .returning();
-
-            if (!data.length) {
-                return res.status(404).json({
-                    message: "User not found",
-                });
-            }
-
-            return res.status(200).json(data[0]);
-        } catch {
-            return res.status(500).json({
-                message: "Internal server error",
-            });
-        }
-    }
-);
-
-/**
- * Elimina un usuario por su ID.
- * @route DELETE /users/:id
- * @param id - UUID del usuario a eliminar
- * @returns Mensaje de confirmacion, 404 si no existe, o 500 en error
- */
-router.delete("/:id",
-    validateParams(getUsersByIdSchema),
-    async (req, res) => {
-        try {
-            const data = await db
-                .delete(users)
-                .where(eq(users.id, req.params.id as string))
-                .returning();
-
-            if (!data.length) {
-                return res.status(404).json({
-                    message: "User not found",
-                });
-            }
-
-            return res.status(200).json({
-                message: "User deleted",
-            });
-        } catch {
-            return res.status(500).json({
-                message: "Internal server error",
-            });
-        }
-    }
-);
+router.get("/", getAllUsers);
+router.get("/:id", validateParams(idSchema), getUserById);
+router.post("/", validateBody(insert_user_schema), createUser);
+router.put("/:id", validateParams(idSchema), validateBody(update_user_schema), updateUser);
+router.delete("/:id", validateParams(idSchema), deleteUser);
 
 export default router;

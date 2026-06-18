@@ -46,13 +46,13 @@ export const register = async (req: Request, res: Response) => {
     console.error('Error during registration:', error);
     res.status(500).json({ message: 'Failed to register user' });
   }
-}
+};
 
 /**
  * Autentica a un usuario verificando sus credenciales contra la base de datos.
  * Devuelve un JWT y los datos publicos del usuario al autenticar con exito.
  * @param req - Body: `email`, `password`
- * @param res - 201 con token y datos del usuario, 401 si las credenciales son invalidas, o 500 en error
+ * @param res - 200 con token y datos del usuario, 401 si las credenciales son invalidas, o 500 en error
  */
 export const login = async (req: Request, res: Response) => {
   try {
@@ -78,7 +78,7 @@ export const login = async (req: Request, res: Response) => {
       email: user.email
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: 'Login successful',
       user: {
         id: user.id,
@@ -96,4 +96,4 @@ export const login = async (req: Request, res: Response) => {
     console.error('Error during login:', error);
     res.status(500).json({ message: 'Failed to login user' });
   }
-}
+};

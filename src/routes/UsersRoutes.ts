@@ -5,20 +5,13 @@ import z from "zod";
 import { db } from "../db/connection";
 import { users, insert_user_schema, update_user_schema } from "../db/schemas/UsersSchema";
 import { validateBody, validateParams } from "../middleware/validations";
-import {login, register} from '../controllers/userController';
 
-/** Router para el CRUD de usuarios y autenticacion. Prefijo: `/users` */
+/** Router para el CRUD de usuarios. Prefijo: `/users` */
 const router = Router();
 
 /** Valida que el parametro `id` de la ruta sea un UUID valido */
 const getUsersByIdSchema = z.object({
     id: z.uuid(),
-});
-
-/** Valida las credenciales del body para el login */
-const loginSchema = z.object({
-    email: z.email(),
-    password: z.string().min(6, 'Password must be at least 6 characters long')
 });
 
 /**
@@ -152,17 +145,4 @@ router.delete("/:id",
     }
 );
 
-/**
- * Autentica a un usuario y devuelve un token JWT.
- * @route POST /users/login
- * @param body - `email` y `password` del usuario
- */
-router.post("/login",validateBody(loginSchema), login)
-
-/**
- * Registra un nuevo usuario en el sistema.
- * @route POST /users/register
- * @param body - Datos del usuario validados con `insert_user_schema`
- */
-router.post("/register", validateBody(insert_user_schema), register);
 export default router;

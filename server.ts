@@ -1,6 +1,7 @@
 import app from "./src/app";
 import env from "./env";
 
+import authRoutes from "./src/routes/AuthRoutes";
 import userRoutes from "./src/routes/UsersRoutes";
 import userRoleTypeRoutes from "./src/routes/UserRoleTypesRoutes";
 import userRoleRoutes from "./src/routes/UserRolesRoutes";
@@ -17,6 +18,8 @@ import notificationTypeRoutes from "./src/routes/NotificationTypesRoutes";
 
 import reviewRoutes from "./src/routes/ReviewsRoutes";
 import reviewAnswersRoutes from "./src/routes/ReviewsAnswersRoutes";
+
+app.use("/api/auth", authRoutes);
 
 // Sub-rutas de usuarios antes del router principal para evitar conflicto con /:id
 app.use("/api/users/role-types", userRoleTypeRoutes);

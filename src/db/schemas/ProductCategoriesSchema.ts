@@ -5,6 +5,7 @@ import { products } from "./ProductsSchema";
 /** Catalogo de categorias disponibles para clasificar productos (ej. Electronics, Gaming) */
 export const product_categories = pgTable("product_categories", {
   category_id: uuid("category_id").primaryKey().defaultRandom(),
+  /** Nombre de la categoria que se muestra al usuario. Ej: `"Electronics"`, `"Gaming"` */
   name_category: text("name_category").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
@@ -21,6 +22,8 @@ export const selectProductCategoriesSchema = createSelectSchema(product_categori
 
 /** Tabla pivot many-to-many entre `products` y `product_categories` */
 export const products_categories = pgTable("products_categories", {
+  /** FK hacia `products` */
   product_id: uuid("product_id").notNull().references(() => products.product_id),
+  /** FK hacia `product_categories` */
   category_id: uuid("category_id").notNull().references(() => product_categories.category_id),
 });

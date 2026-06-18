@@ -6,8 +6,11 @@ import { users } from "./UsersSchema";
 /** Preferencias de configuracion por usuario (idioma, notificaciones, etc.) */
 export const user_preferences = pgTable("user_preferences", {
     preference_id: uuid("preference_id").primaryKey().defaultRandom(),
+    /** FK hacia `users`. Un usuario puede tener multiples registros de preferencias */
     user_id: uuid("user_id").notNull().references(() => users.id),
+    /** Habilita o deshabilita el envio de notificaciones al usuario. Default `true` */
     notifications: boolean("notifications").default(true),
+    /** Idioma preferido de la interfaz. Default `"es"` (espanol) */
     language: text("language").default("es"),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
 });

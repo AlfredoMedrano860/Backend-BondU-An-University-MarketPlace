@@ -69,3 +69,31 @@ export const validateQuery = (schema: z.ZodTypeAny) => {
         }
     }
 }
+
+/**
+ * Middleware que valida el archivo subido por multer (`req.file`).
+ * @param options.required - Si es true, responde 400 cuando no hay archivo
+ * @param options.maxSize - Tamano maximo en bytes (opcional)
+ */
+export const validateFile = (options: { required?: boolean; maxSize?: number } = {}) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const { required = false, maxSize } = options;
+
+        if (required && !req.file) {
+            return res.status(400).json({ message: 'File is required', errors: ['No file was uploaded'] });
+        }
+
+        if (!req.file) return next();
+
+        if (maxSize && req.file.size > maxSize) {
+            const maxMB = (maxSize / (1024 * 1024)).toFixed(2);
+            const fileMB = (req.file.size / (1024 * 1024)).toFixed(2);
+            return res.status(400).json({
+                message: 'File size exceeds maximum allowed size',
+                errors: [`File size (${fileMB}MB) exceeds maximum (${maxMB}MB)`],
+            });
+        }
+
+        next();
+    };
+};

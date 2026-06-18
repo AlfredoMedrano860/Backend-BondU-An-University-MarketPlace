@@ -6,12 +6,19 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     username: text("username").notNull(),
+    /** Debe ser unico. Se usa como credencial de login */
     email: text("email").notNull(),
+    /** Almacenada con hash bcrypt, nunca en texto plano */
     password: text("password").notNull(),
+    /** URL del avatar del usuario. Nullable si no ha subido foto */
     avatar: text("avatar"),
+    /** Numero de telefono de contacto. Nullable */
     phone: text("phone"),
+    /** Ciudad o region del usuario. Nullable */
     location: text("location"),
+    /** Universidad a la que pertenece el usuario. Nullable */
     university: text("university"),
+    /** Carrera o programa academico. Nullable */
     career: text("career"),
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),

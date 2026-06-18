@@ -4,6 +4,7 @@ import {createInsertSchema,createSelectSchema} from "drizzle-zod";
 /** Catalogo de condiciones fisicas de los productos (ej. New, Used) */
 export const product_conditions = pgTable("product_conditions", {
   condition_id: uuid("condition_id").primaryKey().defaultRandom(),
+  /** Nombre de la condicion fisica. Ej: `"New"`, `"Used"`, `"Refurbished"` */
   name_condition: text("name_condition").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),

@@ -1,13 +1,14 @@
-import seedProducts from "./ProductsSeed";
 import seedUsers from "./UsersSeed";
-import seedNotifications from "./NotificationsSeed";
+import seedProducts from "./ProductsSeed";
 import seedReviews from "./ReviewsSeed";
+import seedNotifications from "./NotificationsSeed";
 
+// Orden importante: usuarios primero, luego productos (que referencian seller_id), luego reseñas
 const seed = async () => {
-    await seedProducts();
     await seedUsers();
-    await seedNotifications();
+    await seedProducts();
     await seedReviews();
+    await seedNotifications();
 };
 
 seed()

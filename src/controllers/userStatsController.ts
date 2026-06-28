@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+﻿import type { Request, Response } from 'express';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/connection';
 import { user_stats } from '../db/schemas/UserStatsSchema';
@@ -18,13 +18,13 @@ export const getAllUserStats = async (_req: Request, res: Response) => {
 };
 
 /**
- * Retorna las estadisticas de un usuario por su ID.
- * @param req - Params: `id` del registro de estadisticas
+ * Retorna las estadisticas de un usuario por su user_id.
+ * @param req - Params: `id` del usuario
  * @param res - 200 con las estadisticas, 404 si no existen, o 500 en error interno
  */
 export const getUserStatsById = async (req: Request, res: Response) => {
     try {
-        const data = await db.select().from(user_stats).where(eq(user_stats.id, req.params.id as string));
+        const data = await db.select().from(user_stats).where(eq(user_stats.user_id, req.params.id as string)); // busca por user_id
         if (!data.length) return res.status(404).json({ message: 'Stats not found' });
         return res.status(200).json(data[0]);
     } catch {

@@ -24,7 +24,7 @@ export const getAllPreferences = async (_req: Request, res: Response) => {
  */
 export const getPreferencesById = async (req: Request, res: Response) => {
     try {
-        const data = await db.select().from(user_preferences).where(eq(user_preferences.preference_id, req.params.id as string));
+        const data = await db.select().from(user_preferences).where(eq(user_preferences.user_id, req.params.id as string));
         if (!data.length) return res.status(404).json({ message: 'Preferences not found' });
         return res.status(200).json(data[0]);
     } catch {
@@ -53,7 +53,7 @@ export const createPreferences = async (req: Request, res: Response) => {
  */
 export const updatePreferences = async (req: Request, res: Response) => {
     try {
-        const data = await db.update(user_preferences).set(req.body).where(eq(user_preferences.preference_id, req.params.id as string)).returning();
+        const data = await db.update(user_preferences).set(req.body).where(eq(user_preferences.user_id, req.params.id as string)).returning();
         if (!data.length) return res.status(404).json({ message: 'Preferences not found' });
         return res.status(200).json(data[0]);
     } catch {
@@ -68,7 +68,7 @@ export const updatePreferences = async (req: Request, res: Response) => {
  */
 export const deletePreferences = async (req: Request, res: Response) => {
     try {
-        const data = await db.delete(user_preferences).where(eq(user_preferences.preference_id, req.params.id as string)).returning();
+        const data = await db.delete(user_preferences).where(eq(user_preferences.user_id, req.params.id as string)).returning();
         if (!data.length) return res.status(404).json({ message: 'Preferences not found' });
         return res.status(200).json({ message: 'Preferences deleted' });
     } catch {

@@ -7,6 +7,7 @@ import userRoleTypeRoutes from "./src/routes/UserRoleTypesRoutes";
 import userRoleRoutes from "./src/routes/UserRolesRoutes";
 import userPreferencesRoutes from "./src/routes/UserPreferencesRoutes";
 import userStatsRoutes from "./src/routes/UserStatsRoutes";
+import userContactRoutes from "./src/routes/UserContactRoutes";
 
 import productRoutes from "./src/routes/ProductsRoutes";
 import productCategoriesRoutes from "./src/routes/ProductCategoriesRoutes";
@@ -18,6 +19,7 @@ import notificationTypeRoutes from "./src/routes/NotificationTypesRoutes";
 
 import reviewRoutes from "./src/routes/ReviewsRoutes";
 import reviewAnswersRoutes from "./src/routes/ReviewsAnswersRoutes";
+import favoritesRoutes from "./src/routes/FavoritesRoutes";
 
 app.use("/api/auth", authRoutes);
 
@@ -26,6 +28,7 @@ app.use("/api/users/role-types", userRoleTypeRoutes);
 app.use("/api/users/roles", userRoleRoutes);
 app.use("/api/users/preferences", userPreferencesRoutes);
 app.use("/api/users/stats", userStatsRoutes);
+app.use("/api/users/contact", userContactRoutes);
 app.use("/api/users", userRoutes);
 
 // Sub-rutas de productos antes del router principal para evitar conflicto con /:id
@@ -40,6 +43,8 @@ app.use("/api/notification-types", notificationTypeRoutes);
 // Sub-ruta de respuestas antes del router principal de reseñas para evitar conflicto con /:id
 app.use("/api/reviews/answers", reviewAnswersRoutes);
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/users/:id/favorites", favoritesRoutes);
 
 app.get("/", (_, res) => {
     res.json({

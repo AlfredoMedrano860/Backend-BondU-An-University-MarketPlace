@@ -2,6 +2,7 @@ import { pgTable, uuid, text, timestamp, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { product_conditions } from "./ProductConditionsSchema";
 import { product_status } from "./ProductStatusSchema";
+import { users } from "./UsersSchema";
 
 /** Tabla principal de productos publicados en el marketplace */
 export const products = pgTable("products", {
@@ -10,6 +11,8 @@ export const products = pgTable("products", {
   description: text("description").notNull(),
   /** Precio en la moneda local (entero, sin decimales). Ej: 15000 = $15.000 CLP */
   price: integer("price").notNull(),
+  /** FK hacia `users`. Vendedor que publica el producto */
+  seller_id: uuid("seller_id").references(() => users.id),
   /** FK hacia `product_conditions`. Nullable si aun no se asigna condicion */
   condition_id: uuid("condition_id").references(() => product_conditions.condition_id),
   /** FK hacia `product_status`. Nullable si aun no se asigna estado */

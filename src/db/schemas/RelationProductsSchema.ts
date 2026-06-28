@@ -5,9 +5,14 @@ import { product_categories, products_categories } from "./ProductCategoriesSche
 import { product_conditions } from "./ProductConditionsSchema";
 import { product_status } from "./ProductStatusSchema";
 import { product_images } from "./ProductImagesSchema";
+import { users } from "./UsersSchema";
 
-/** Relaciones de `products`: una condicion, un estado, muchas categorias via pivot, muchas imagenes */
+/** Relaciones de `products`: un vendedor, una condicion, un estado, muchas categorias via pivot, muchas imagenes */
 export const product_relations = relations(products, ({ one, many }) => ({
+    seller: one(users, {
+        fields: [products.seller_id],
+        references: [users.id],
+    }),
     categories: many(products_categories),
     images: many(product_images),
     condition: one(product_conditions, {

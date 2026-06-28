@@ -14,6 +14,7 @@ export * from "./RelationNotificationsSchema";
 export * from "./UsersSchema";
 export * from "./UserStatsSchema";
 export * from "./UserPreferencesSchema";
+export * from "./UserContactSchema";
 export * from "./UserRolesSchema";
 export * from "./UserRoleTypesSchema";
 export * from "./RelationUsersSchema";
@@ -21,3 +22,5 @@ export * from "./RelationUsersSchema";
 export * from "./ReviewsSchema";
 export * from "./ReviewsAnswersSchema";
 export * from "./RelationReviewsSchema";
+
+export * from "./FavoritesSchema";

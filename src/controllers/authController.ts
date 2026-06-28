@@ -1,16 +1,13 @@
 import type { Request, Response } from 'express';
 import { db } from "../db/connection";
 import { users } from "../db/schemas/UsersSchema";
+import { user_stats } from "../db/schemas/UserStatsSchema";
+import { user_preferences } from "../db/schemas/UserPreferencesSchema";
+import { user_contact } from "../db/schemas/UserContactSchema";
 import { hashPassword, comparePasswords } from "../utils/passwords";
-import { generateToken } from "../utils/jwt";
+import { generateToken, generateResetToken, verifyResetToken } from "../utils/jwt";
 import { eq } from 'drizzle-orm';
 
-/**
- * Registra un nuevo usuario en la base de datos.
- * Hashea la contrasena antes de persistirla y devuelve un JWT al completar.
- * @param req - Body: `username`, `email`, `password`, `avatar`, `phone`, `location`, `university`, `career`
- * @param res - 201 con el token JWT, o 500 en error
- */
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password, avatar, phone, location, university, career } = req.body;
@@ -35,12 +32,16 @@ export const register = async (req: Request, res: Response) => {
       career: users.career
     });
 
+    await db.insert(user_stats).values({ user_id: user.id });
+    await db.insert(user_preferences).values({ user_id: user.id, language: 'es', notifications: true });
+    await db.insert(user_contact).values({ user_id: user.id });
+
     const token = await generateToken({
       id: user.id,
       email: user.email,
       username: user.username
     });
-    return res.status(201).json({ message: 'User registered successfully', token });
+    return res.status(201).json({ message: 'User registered successfully', token, user });
 
   } catch (error) {
     console.error('Error during registration:', error);
@@ -48,19 +49,11 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * Autentica a un usuario verificando sus credenciales contra la base de datos.
- * Devuelve un JWT y los datos publicos del usuario al autenticar con exito.
- * @param req - Body: `email`, `password`
- * @param res - 200 con token y datos del usuario, 401 si las credenciales son invalidas, o 500 en error
- */
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, email)
-    });
+    const [user] = await db.select().from(users).where(eq(users.email, email));
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -88,12 +81,70 @@ export const login = async (req: Request, res: Response) => {
         phone: user.phone,
         location: user.location,
         university: user.university,
-        created_at: user.created_at
+        career: user.career,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
       },
       token
     });
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ message: 'Failed to login user' });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with that email address.' });
+    }
+
+    const resetToken = await generateResetToken(user.email);
+
+    return res.status(200).json({
+      message: 'Reset token generated successfully.',
+      resetToken
+    });
+
+  } catch (error) {
+    console.error('Error during forgot password:', error);
+    res.status(500).json({ message: 'Failed to process password reset request.' });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { resetToken, newPassword } = req.body;
+
+    const payload = await verifyResetToken(resetToken);
+
+    const [user] = await db.select().from(users).where(eq(users.email, payload.email));
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid reset token.' });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await db
+      .update(users)
+      .set({ password: hashedPassword, updated_at: new Date() })
+      .where(eq(users.id, user.id));
+
+    return res.status(200).json({ message: 'Password updated successfully.' });
+
+  } catch (error: any) {
+    if (error?.code === 'ERR_JWT_EXPIRED') {
+      return res.status(401).json({ message: 'Reset token has expired. Please request a new one.' });
+    }
+    if (error?.code?.startsWith('ERR_JWT') || error?.message === 'Invalid token type') {
+      return res.status(401).json({ message: 'Reset token is invalid.' });
+    }
+    console.error('Error during reset password:', error);
+    res.status(500).json({ message: 'Failed to reset password.' });
   }
 };

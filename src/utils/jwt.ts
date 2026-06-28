@@ -39,3 +39,38 @@ export const verifyToken = async (token: string): Promise<CustomJWTPayload> => {
     const { payload } = await jwtVerify(token, secretKey);
     return payload as CustomJWTPayload;
 }
+
+/** Payload de un token de reset de contraseña. El campo `type: 'reset'` lo distingue de tokens de sesión. */
+export interface ResetJWTPayload extends JoseJWTPayload {
+    email: string;
+    type: 'reset';
+}
+
+/**
+ * Genera un JWT de corta duración (15 min) exclusivo para reset de contraseña.
+ * @param email - Email del usuario que solicita el reset
+ * @returns Token JWT firmado válido por 15 minutos
+ */
+export const generateResetToken = async (email: string): Promise<string> => {
+    const secretKey = createSecretKey(env.JWT_SECRET, 'utf-8');
+    return new SignJWT({ email, type: 'reset' } as ResetJWTPayload)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('15m')
+        .sign(secretKey);
+};
+
+/**
+ * Verifica un token de reset. Lanza si está expirado, alterado o no es de tipo 'reset'.
+ * @param token - Token de reset a verificar
+ * @returns Payload decodificado con el email del usuario
+ */
+export const verifyResetToken = async (token: string): Promise<ResetJWTPayload> => {
+    const secretKey = createSecretKey(env.JWT_SECRET, 'utf-8');
+    const { payload } = await jwtVerify(token, secretKey);
+    const resetPayload = payload as ResetJWTPayload;
+    if (resetPayload.type !== 'reset') {
+        throw new Error('Invalid token type');
+    }
+    return resetPayload;
+};

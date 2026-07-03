@@ -2,8 +2,10 @@ import app from "./src/app";
 import env from "./env";
 
 import userRoutes from "./src/routes/UserRoutes/UserRoutes";
+import authRoutes from "./src/routes/AuthRoutes/AuthRoutes";
 
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (_, res) => {
     res.json({

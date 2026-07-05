@@ -4,6 +4,7 @@ import { users } from "../db/schemas/UsersSchema";
 import { user_stats } from "../db/schemas/UserStatsSchema";
 import { user_preferences } from "../db/schemas/UserPreferencesSchema";
 import { user_contact } from "../db/schemas/UserContactSchema";
+import { assignRoleIfMissing } from "../utils/roles";
 import { hashPassword, comparePasswords } from "../utils/passwords";
 import { generateToken, generateResetToken, verifyResetToken } from "../utils/jwt";
 import { eq } from 'drizzle-orm';
@@ -11,6 +12,12 @@ import { eq } from 'drizzle-orm';
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password, avatar, phone, location, university, career } = req.body;
+
+    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+    if (existing) {
+      return res.status(409).json({ message: 'An account with that email already exists.' });
+    }
+
     const hashedPassword = await hashPassword(password);
     const [user] = await db.insert(users).values({
       username,
@@ -35,6 +42,9 @@ export const register = async (req: Request, res: Response) => {
     await db.insert(user_stats).values({ user_id: user.id });
     await db.insert(user_preferences).values({ user_id: user.id, language: 'es', notifications: true });
     await db.insert(user_contact).values({ user_id: user.id });
+
+    // Todo usuario nuevo empieza como comprador; se vuelve vendedor al publicar su primer producto
+    await assignRoleIfMissing(user.id, 'buyer');
 
     const token = await generateToken({
       id: user.id,

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
+import { authenticateToken } from "../middleware/auth";
 import { getAllPreferences, getPreferencesById, createPreferences, updatePreferences, deletePreferences } from "../controllers/userPreferencesController";
 
 const router = Router();
@@ -20,8 +21,8 @@ const updateUserPreferencesSchema = z.object({
 
 router.get("/", getAllPreferences);
 router.get("/:id", validateParams(idSchema), getPreferencesById);
-router.post("/", validateBody(createUserPreferencesSchema), createPreferences);
-router.put("/:id", validateParams(idSchema), validateBody(updateUserPreferencesSchema), updatePreferences);
-router.delete("/:id", validateParams(idSchema), deletePreferences);
+router.post("/", authenticateToken, validateBody(createUserPreferencesSchema), createPreferences);
+router.put("/:id", authenticateToken, validateParams(idSchema), validateBody(updateUserPreferencesSchema), updatePreferences);
+router.delete("/:id", authenticateToken, validateParams(idSchema), deletePreferences);
 
 export default router;

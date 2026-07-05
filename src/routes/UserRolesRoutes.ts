@@ -1,6 +1,7 @@
 import { Router } from "express";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
+import { authenticateToken } from "../middleware/auth";
 import { getAllUserRoles, getUserRoleById, createUserRole, deleteUserRole } from "../controllers/userRolesController";
 
 const router = Router();
@@ -14,7 +15,7 @@ const createUserRoleSchema = z.object({
 
 router.get("/", getAllUserRoles);
 router.get("/:id", validateParams(idSchema), getUserRoleById);
-router.post("/", validateBody(createUserRoleSchema), createUserRole);
-router.delete("/:id", validateParams(idSchema), deleteUserRole);
+router.post("/", authenticateToken, validateBody(createUserRoleSchema), createUserRole);
+router.delete("/:id", authenticateToken, validateParams(idSchema), deleteUserRole);
 
 export default router;

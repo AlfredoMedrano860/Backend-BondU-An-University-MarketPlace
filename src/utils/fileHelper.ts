@@ -67,3 +67,22 @@ export const isValidImageExtension = (filename: string): boolean => {
     const valid = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
     return valid.includes(path.extname(filename).toLowerCase());
 };
+
+/**
+ * Detecta el tipo real de una imagen leyendo su firma binaria (magic numbers),
+ * en vez de confiar en el `Content-Type` o la extensión declarados por el cliente.
+ * @param filePath - Ruta absoluta del archivo ya guardado en disco
+ * @returns La extensión real (`.jpg`, `.png`, `.gif`, `.webp`) o `null` si no es una imagen soportada
+ */
+export const detectImageType = (filePath: string): string | null => {
+    const fd = fs.openSync(filePath, 'r');
+    const buffer = Buffer.alloc(12);
+    fs.readSync(fd, buffer, 0, 12, 0);
+    fs.closeSync(fd);
+
+    if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return '.jpg';
+    if (buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return '.png';
+    if (buffer.subarray(0, 4).toString('ascii') === 'GIF8') return '.gif';
+    if (buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP') return '.webp';
+    return null;
+};

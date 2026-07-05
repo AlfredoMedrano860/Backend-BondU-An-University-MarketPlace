@@ -10,7 +10,6 @@ import userStatsRoutes from "./src/routes/UserStatsRoutes";
 import userContactRoutes from "./src/routes/UserContactRoutes";
 
 import productRoutes from "./src/routes/ProductsRoutes";
-import productCategoriesRoutes from "./src/routes/ProductCategoriesRoutes";
 import productConditionsRoutes from "./src/routes/ProductConditionsRoutes";
 import productStatusRoutes from "./src/routes/ProductStatusRoutes";
 
@@ -32,7 +31,6 @@ app.use("/api/users/contact", userContactRoutes);
 app.use("/api/users", userRoutes);
 
 // Sub-rutas de productos antes del router principal para evitar conflicto con /:id
-app.use("/api/products/categories", productCategoriesRoutes);
 app.use("/api/products/conditions", productConditionsRoutes);
 app.use("/api/products/status", productStatusRoutes);
 app.use("/api/products", productRoutes);

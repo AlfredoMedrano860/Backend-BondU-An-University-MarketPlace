@@ -1,6 +1,7 @@
 import { Router } from "express";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
+import { authenticateToken } from "../middleware/auth";
 import { getAllAnswers, getAnswerById, createAnswer, updateAnswer, deleteAnswer } from "../controllers/reviewsAnswersController";
 
 const router = Router();
@@ -18,8 +19,8 @@ const updateAnswerSchema = z.object({
 
 router.get("/", getAllAnswers);
 router.get("/:id", validateParams(idSchema), getAnswerById);
-router.post("/", validateBody(createAnswerSchema), createAnswer);
-router.put("/:id", validateParams(idSchema), validateBody(updateAnswerSchema), updateAnswer);
-router.delete("/:id", validateParams(idSchema), deleteAnswer);
+router.post("/", authenticateToken, validateBody(createAnswerSchema), createAnswer);
+router.put("/:id", authenticateToken, validateParams(idSchema), validateBody(updateAnswerSchema), updateAnswer);
+router.delete("/:id", authenticateToken, validateParams(idSchema), deleteAnswer);
 
 export default router;

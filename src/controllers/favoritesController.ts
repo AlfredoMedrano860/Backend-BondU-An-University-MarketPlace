@@ -4,6 +4,7 @@ import { db } from '../db/connection';
 import { user_favorites } from '../db/schemas/FavoritesSchema';
 import { users } from '../db/schemas/UsersSchema';
 import { products } from '../db/schemas/ProductsSchema';
+import type { AuthenticatedRequest } from '../middleware/auth';
 
 const sellerColumns = {
     id: true, username: true, email: true, avatar: true,
@@ -41,9 +42,17 @@ export const getUserFavorites = async (req: Request, res: Response) => {
     }
 };
 
-export const addFavorite = async (req: Request, res: Response) => {
+/** Agrega un producto a favoritos. Solo el propio usuario puede modificar sus favoritos. */
+export const addFavorite = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (req.params.id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot modify another user\'s favorites' });
+        }
         const { product_id } = req.body;
+
+        const [product] = await db.select({ product_id: products.product_id }).from(products).where(eq(products.product_id, product_id));
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+
         const data = await db
             .insert(user_favorites)
             .values({ user_id: req.params.id as string, product_id })
@@ -57,8 +66,12 @@ export const addFavorite = async (req: Request, res: Response) => {
     }
 };
 
-export const removeFavorite = async (req: Request, res: Response) => {
+/** Quita un producto de favoritos. Solo el propio usuario puede modificar sus favoritos. */
+export const removeFavorite = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (req.params.id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot modify another user\'s favorites' });
+        }
         const data = await db
             .delete(user_favorites)
             .where(

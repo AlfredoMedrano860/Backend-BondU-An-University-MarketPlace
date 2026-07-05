@@ -11,7 +11,7 @@ DECLARE
   role_seller_id uuid;
   role_buyer_id uuid;
   hashed_password text := '$2b$12$2t9Pm91aFeLadri0D2rjLOPD3yqSFB6sGFqxNx/btpt2kfz2gd7JO'; -- "bondu1234"
-  base_url text := 'http://localhost:3000';
+  base_url text := 'https://bondubackend.onrender.com'; -- URL publica donde viven las imagenes de uploads/
   avatar_url text;
 
   u_alfredo uuid;
@@ -45,8 +45,6 @@ DECLARE
 BEGIN
   avatar_url := base_url || '/uploads/IconoPerfil.webp';
 
-  -- ===== UsersSeed =====
-
   INSERT INTO user_role_types (role_name) VALUES ('seller') RETURNING role_type_id INTO role_seller_id;
   INSERT INTO user_role_types (role_name) VALUES ('buyer')  RETURNING role_type_id INTO role_buyer_id;
 
@@ -66,21 +64,18 @@ BEGIN
   VALUES ('Valentina Cruz', 'valentina.cruz@una.ac.cr', hashed_password, avatar_url, '+506 5545-6789', 'Heredia, Costa Rica', 'UNA', 'Diseño')
   RETURNING id INTO u_valentina;
 
-  -- user_stats (sample)
   INSERT INTO user_stats (user_id, rating_avg, review_count, sales_count) VALUES
     (u_alfredo,   '3.0', 50, 40),
     (u_camila,    '4.5', 28, 22),
     (u_diego,     '4.0', 15, 11),
     (u_valentina, '5.0', 8,  7);
 
-  -- user_contact
   INSERT INTO user_contact (user_id, bio, instagram, telegram) VALUES
     (u_alfredo,   'Estudiante de Ingeniería en la UCR. Vendo apuntes, libros y accesorios tech.', 'alfredo.ucr', 'alfredo_ucr'),
     (u_camila,    'Comunicadora apasionada. Ofrezco materiales de diseño y libros de comunicación.', 'camila.rojas', 'camila_rojas'),
     (u_diego,     'Dev en el TEC. Vendo libros de computación y gadgets.', 'diego.tec', 'diego_tec'),
     (u_valentina, 'Diseñadora en la UNA. Especializada en materiales de arte y diseño.', 'vale.una', 'vale_una');
 
-  -- user_preferences
   INSERT INTO user_preferences (user_id, language, notifications) VALUES
     (u_alfredo,   'es', true),
     (u_camila,    'es', true),
@@ -97,8 +92,6 @@ BEGIN
     (u_diego,     role_seller_id),
     (u_valentina, role_buyer_id),
     (u_valentina, role_seller_id);
-
-  -- ===== ProductsSeed =====
 
   INSERT INTO product_conditions (name_condition) VALUES ('Nuevo')   RETURNING condition_id INTO cond_nuevo;
   INSERT INTO product_conditions (name_condition) VALUES ('Usado')   RETURNING condition_id INTO cond_usado;
@@ -208,8 +201,6 @@ BEGIN
     (p_usb, base_url || '/uploads/USBGallery2.webp', false),
     (p_usb, base_url || '/uploads/USBGallery3.webp', false);
 
-  -- ===== ReviewsSeed =====
-
   INSERT INTO reviews (reviewer_id, seller_id, rating, comment) VALUES
     (u_camila, u_alfredo, '3', 'Todo bien, aunque el envío tardó un poco más de lo esperado.')
     RETURNING id INTO review_camila_alfredo;
@@ -230,8 +221,6 @@ BEGIN
   UPDATE user_stats SET rating_avg = '4.7', review_count = 3 WHERE user_id = u_camila;
   UPDATE user_stats SET rating_avg = '4.0', review_count = 1 WHERE user_id = u_diego;
   UPDATE user_stats SET rating_avg = '5.0', review_count = 2 WHERE user_id = u_valentina;
-
-  -- ===== NotificationsSeed =====
 
   INSERT INTO notification_types (notification_type_name) VALUES ('success') RETURNING notification_type_id INTO nt_success;
   INSERT INTO notification_types (notification_type_name) VALUES ('error')   RETURNING notification_type_id INTO nt_error;

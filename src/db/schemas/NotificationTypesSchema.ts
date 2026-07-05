@@ -1,10 +1,10 @@
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import {createInsertSchema,createSelectSchema} from "drizzle-zod";
 
-/** Catalogo de tipos de notificacion disponibles (ej. SYSTEM, PRODUCT, ORDER) */
+/** Catalogo de tipos de notificacion disponibles (success, error, warning, info) */
 export const notification_types = pgTable("notification_types", {
   notification_type_id: uuid("notification_type_id").primaryKey().defaultRandom(),
-  /** Identificador del tipo de notificacion. Ej: `"SYSTEM"`, `"PRODUCT"`, `"ORDER"` */
+  /** Identificador del tipo de notificacion. Ej: `"success"`, `"error"`, `"warning"`, `"info"` */
   notification_type_name: text("notification_type_name").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),

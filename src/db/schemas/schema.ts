@@ -1,7 +1,6 @@
 /** Punto de entrada unificado para todos los schemas. Usar este archivo para imports limpios en el resto del proyecto. */
 
 export * from "./ProductsSchema";
-export * from "./ProductCategoriesSchema";
 export * from "./ProductConditionsSchema";
 export * from "./ProductStatusSchema";
 export * from "./ProductImagesSchema";

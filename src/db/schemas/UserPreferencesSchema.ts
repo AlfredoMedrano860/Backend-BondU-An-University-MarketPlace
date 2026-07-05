@@ -7,7 +7,7 @@ import { users } from "./UsersSchema";
 export const user_preferences = pgTable("user_preferences", {
     preference_id: uuid("preference_id").primaryKey().defaultRandom(),
     /** FK hacia `users`. Un usuario puede tener multiples registros de preferencias */
-    user_id: uuid("user_id").notNull().references(() => users.id),
+    user_id: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     /** Habilita o deshabilita el envio de notificaciones al usuario. Default `true` */
     notifications: boolean("notifications").default(true),
     /** Idioma preferido de la interfaz. Default `"es"` (espanol) */

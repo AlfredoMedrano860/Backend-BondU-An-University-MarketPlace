@@ -6,10 +6,10 @@ import { users } from "./UsersSchema";
 /** Tabla de reseñas entre usuarios: un reviewer califica a un seller */
 export const reviews = pgTable("reviews", {
     id: uuid("id").primaryKey().defaultRandom(),
-    /** FK hacia `users`. Usuario que escribe la reseña */
-    reviewer_id: uuid("reviewer_id").notNull().references(() => users.id),
-    /** FK hacia `users`. Usuario vendedor que recibe la calificacion */
-    seller_id: uuid("seller_id").notNull().references(() => users.id),
+    /** FK hacia `users`. Usuario que escribe la reseña. Se borra en cascada si borra su cuenta */
+    reviewer_id: uuid("reviewer_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    /** FK hacia `users`. Usuario vendedor que recibe la calificacion. Se borra en cascada si borra su cuenta */
+    seller_id: uuid("seller_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     /** Calificacion numerica del seller. Escala de 1 a 5 */
     rating: numeric("rating").notNull(),
     /** Comentario opcional que acompana la calificacion. Nullable */

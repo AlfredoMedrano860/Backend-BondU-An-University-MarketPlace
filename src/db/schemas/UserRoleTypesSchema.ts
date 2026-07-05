@@ -1,10 +1,10 @@
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-/** Catalogo de tipos de rol disponibles en la plataforma (ej. seller, buyer, admin) */
+/** Catalogo de tipos de rol disponibles en la plataforma: comprador y vendedor */
 export const user_role_types = pgTable("user_role_types", {
     role_type_id: uuid("role_type_id").primaryKey().defaultRandom(),
-    /** Nombre identificador del rol. Ej: `"seller"`, `"buyer"`, `"admin"` */
+    /** Nombre identificador del rol. Ej: `"seller"`, `"buyer"` */
     role_name: text("role_name").notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
 });

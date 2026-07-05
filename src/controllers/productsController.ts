@@ -2,9 +2,12 @@ import type { Request, Response } from 'express';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/connection';
 import { products } from '../db/schemas/ProductsSchema';
-import { product_images } from '../db/schemas/ProductImagesSchema';
-import { products_categories } from '../db/schemas/ProductCategoriesSchema';
+import { product_status } from '../db/schemas/ProductStatusSchema';
 import { user_stats } from '../db/schemas/UserStatsSchema';
+import { assignRoleIfMissing } from '../utils/roles';
+import { deleteProductImageFiles } from '../utils/productImages';
+import { handleDbError } from '../utils/dbErrors';
+import type { AuthenticatedRequest } from '../middleware/auth';
 
 const sellerColumns = {
     id: true, username: true, email: true, avatar: true,
@@ -15,6 +18,7 @@ const sellerColumns = {
 const withRelations = {
     seller: { columns: sellerColumns },
     condition: true,
+    status: true,
     images: true,
 } as const;
 
@@ -47,55 +51,82 @@ export const getProductById = async (req: Request, res: Response) => {
 };
 
 /**
- * Crea un nuevo producto.
+ * Crea un nuevo producto. El `seller_id` debe coincidir con el usuario autenticado.
+ * Al publicar su primer producto, el usuario pasa a tener también el rol "seller".
  */
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (req.body.seller_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot create a product for another user' });
+        }
         const data = await db.insert(products).values(req.body).returning();
+        await assignRoleIfMissing(req.user!.id, 'seller');
         return res.status(201).json(data[0]);
-    } catch {
-        return res.status(500).json({ message: 'Internal server error' });
+    } catch (error) {
+        return handleDbError(error, res);
     }
 };
 
 /**
- * Actualiza los campos del producto indicado por ID.
+ * Actualiza los campos del producto indicado por ID. Solo el vendedor dueño puede modificarlo.
  */
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        const id = req.params.id as string;
+        const [existing] = await db.select({ seller_id: products.seller_id }).from(products).where(eq(products.product_id, id));
+        if (!existing) return res.status(404).json({ message: 'Product not found' });
+        if (existing.seller_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Not the owner of this product' });
+        }
+
         const data = await db
             .update(products)
             .set(req.body)
-            .where(eq(products.product_id, req.params.id as string))
+            .where(eq(products.product_id, id))
             .returning();
-        if (!data.length) return res.status(404).json({ message: 'Product not found' });
         return res.status(200).json(data[0]);
-    } catch {
-        return res.status(500).json({ message: 'Internal server error' });
+    } catch (error) {
+        return handleDbError(error, res);
     }
 };
 
 /**
- * Elimina un producto por su ID.
+ * Elimina un producto por su ID. Solo el vendedor dueño puede eliminarlo.
+ * Tambien borra del disco los archivos de sus imagenes.
  */
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const id = req.params.id as string;
-        await db.delete(product_images).where(eq(product_images.product_id, id));
-        await db.delete(products_categories).where(eq(products_categories.product_id, id));
-        const data = await db.delete(products).where(eq(products.product_id, id)).returning();
-        if (!data.length) return res.status(404).json({ message: 'Product not found' });
+        const [existing] = await db.select({ seller_id: products.seller_id }).from(products).where(eq(products.product_id, id));
+        if (!existing) return res.status(404).json({ message: 'Product not found' });
+        if (existing.seller_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Not the owner of this product' });
+        }
+
+        // Borra los archivos en disco; las filas de product_images cascadean al borrar el producto
+        await deleteProductImageFiles(id);
+        await db.delete(products).where(eq(products.product_id, id));
         return res.status(200).json({ message: 'Product deleted' });
     } catch {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-export const sellProduct = async (req: Request, res: Response) => {
+/**
+ * Marca un producto como vendido: actualiza su `status_id` a "Vendido" (no lo borra)
+ * y suma una venta a las estadisticas del vendedor.
+ */
+export const sellProduct = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const id = req.params.id as string;
         const product = await db.query.products.findFirst({ where: eq(products.product_id, id) });
         if (!product) return res.status(404).json({ message: 'Product not found' });
+        if (product.seller_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Not the owner of this product' });
+        }
+
+        const [vendido] = await db.select({ status_id: product_status.status_id }).from(product_status).where(eq(product_status.name_status, 'Vendido'));
+        if (!vendido) return res.status(500).json({ message: 'Vendido status not found' });
 
         if (product.seller_id) {
             await db
@@ -104,9 +135,7 @@ export const sellProduct = async (req: Request, res: Response) => {
                 .where(eq(user_stats.user_id, product.seller_id));
         }
 
-        await db.delete(product_images).where(eq(product_images.product_id, id));
-        await db.delete(products_categories).where(eq(products_categories.product_id, id));
-        await db.delete(products).where(eq(products.product_id, id));
+        await db.update(products).set({ status_id: vendido.status_id, updated_at: new Date() }).where(eq(products.product_id, id));
 
         return res.status(200).json({ message: 'Product sold' });
     } catch {

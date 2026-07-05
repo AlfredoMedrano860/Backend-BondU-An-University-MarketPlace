@@ -1,6 +1,7 @@
 import { Router } from "express";
 import z from "zod";
 import { validateBody, validateParams } from "../middleware/validations";
+import { authenticateToken } from "../middleware/auth";
 import { getAllNotifications, getNotificationById, createNotification, updateNotification, deleteNotification } from "../controllers/notificationsController";
 
 const router = Router();
@@ -18,10 +19,10 @@ const updateNotificationSchema = z.object({
     read_at: z.iso.datetime().optional(),
 });
 
-router.get("/", getAllNotifications);
-router.get("/:id", validateParams(idSchema), getNotificationById);
-router.post("/", validateBody(createNotificationSchema), createNotification);
-router.put("/:id", validateParams(idSchema), validateBody(updateNotificationSchema), updateNotification);
-router.delete("/:id", validateParams(idSchema), deleteNotification);
+router.get("/", authenticateToken, getAllNotifications);
+router.get("/:id", authenticateToken, validateParams(idSchema), getNotificationById);
+router.post("/", authenticateToken, validateBody(createNotificationSchema), createNotification);
+router.put("/:id", authenticateToken, validateParams(idSchema), validateBody(updateNotificationSchema), updateNotification);
+router.delete("/:id", authenticateToken, validateParams(idSchema), deleteNotification);
 
 export default router;

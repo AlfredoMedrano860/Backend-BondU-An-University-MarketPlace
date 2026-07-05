@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import fs from 'fs';
 
 import { z } from 'zod';
+import { detectImageType, deleteFile } from '../utils/fileHelper';
 
 /**
  * Middleware que valida `req.body` contra un schema Zod.
@@ -96,4 +99,33 @@ export const validateFile = (options: { required?: boolean; maxSize?: number } =
 
         next();
     };
+};
+
+/**
+ * Middleware que valida el CONTENIDO real del archivo subido (firma binaria),
+ * en vez de confiar en el `Content-Type` declarado por el cliente (fácilmente falsificable).
+ * Si el archivo no es una imagen soportada, lo borra del disco y responde 400.
+ * Si la extensión con la que multer lo guardó no coincide con el tipo real detectado,
+ * renombra el archivo en disco para que se sirva con el `Content-Type` correcto.
+ * Debe ejecutarse después de `upload.single(...)` y `validateFile`.
+ */
+export const validateImageContent = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) return next();
+
+    const realExt = detectImageType(req.file.path);
+    if (!realExt) {
+        await deleteFile(req.file.filename);
+        return res.status(400).json({ message: 'El archivo no es una imagen válida (JPEG, PNG, GIF o WebP).' });
+    }
+
+    const currentExt = path.extname(req.file.filename).toLowerCase();
+    if (currentExt !== realExt) {
+        const newFilename = `${path.basename(req.file.filename, path.extname(req.file.filename))}${realExt}`;
+        const newPath = path.join(path.dirname(req.file.path), newFilename);
+        fs.renameSync(req.file.path, newPath);
+        req.file.filename = newFilename;
+        req.file.path = newPath;
+    }
+
+    next();
 };

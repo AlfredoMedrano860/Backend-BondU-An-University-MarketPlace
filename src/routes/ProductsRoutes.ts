@@ -1,7 +1,8 @@
 import { Router } from "express";
 import z from "zod";
-import { validateBody, validateParams, validateFile } from "../middleware/validations";
+import { validateBody, validateParams, validateFile, validateImageContent } from "../middleware/validations";
 import { upload } from "../middleware/upload";
+import { authenticateToken } from "../middleware/auth";
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, sellProduct } from "../controllers/productsController";
 import { getProductImages, uploadProductImage, deleteProductImage, setPrimaryImage } from "../controllers/productImagesController";
 
@@ -29,15 +30,15 @@ const updateProductSchema = z.object({
 
 router.get("/", getAllProducts);
 router.get("/:id", validateParams(idSchema), getProductById);
-router.post("/", validateBody(createProductSchema), createProduct);
-router.put("/:id", validateParams(idSchema), validateBody(updateProductSchema), updateProduct);
-router.delete("/:id", validateParams(idSchema), deleteProduct);
-router.patch("/:id/sell", validateParams(idSchema), sellProduct);
+router.post("/", authenticateToken, validateBody(createProductSchema), createProduct);
+router.put("/:id", authenticateToken, validateParams(idSchema), validateBody(updateProductSchema), updateProduct);
+router.delete("/:id", authenticateToken, validateParams(idSchema), deleteProduct);
+router.patch("/:id/sell", authenticateToken, validateParams(idSchema), sellProduct);
 
 // Imagenes del producto
 router.get("/:id/images", validateParams(idSchema), getProductImages);
-router.post("/:id/images", validateParams(idSchema), upload.single("image"), validateFile({ required: true }), uploadProductImage);
-router.delete("/:id/images/:imageId", validateParams(imageIdSchema), deleteProductImage);
-router.patch("/:id/images/:imageId/primary", validateParams(imageIdSchema), setPrimaryImage);
+router.post("/:id/images", authenticateToken, validateParams(idSchema), upload.single("image"), validateFile({ required: true }), validateImageContent, uploadProductImage);
+router.delete("/:id/images/:imageId", authenticateToken, validateParams(imageIdSchema), deleteProductImage);
+router.patch("/:id/images/:imageId/primary", authenticateToken, validateParams(imageIdSchema), setPrimaryImage);
 
 export default router;

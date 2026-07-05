@@ -8,7 +8,6 @@ import { review_answers } from "../schemas/ReviewsAnswersSchema";
 import { reviews } from "../schemas/ReviewsSchema";
 import { user_favorites } from "../schemas/FavoritesSchema";
 import { product_images } from "../schemas/ProductImagesSchema";
-import { products_categories } from "../schemas/ProductCategoriesSchema";
 import { products } from "../schemas/ProductsSchema";
 import { user_contact } from "../schemas/UserContactSchema";
 import { hashPassword } from "../../utils/passwords";
@@ -26,7 +25,6 @@ async function seedUsers() {
     await db.delete(reviews).execute();
     await db.delete(user_favorites).execute();
     await db.delete(product_images).execute();
-    await db.delete(products_categories).execute();
     await db.delete(products).execute();
     await db.delete(user_roles).execute();
     await db.delete(user_preferences).execute();
@@ -40,16 +38,15 @@ async function seedUsers() {
         .values([
             { role_name: "seller" },
             { role_name: "buyer" },
-            { role_name: "admin" }
         ])
         .returning();
 
     const sellerRole = roles.find(r => r.role_name === "seller")!;
+    const buyerRole  = roles.find(r => r.role_name === "buyer")!;
 
-    // Matches sellers array in src/components/data/Seller.ts
     const hashedPassword = await hashPassword("bondu1234");
     const BASE_URL = process.env.BACKEND_URL || "http://localhost:3000";
-    const defaultAvatar = `${BASE_URL}/uploads/IconoPerfil.png`;
+    const defaultAvatar = `${BASE_URL}/uploads/IconoPerfil.webp`;
 
     const createdUsers = await db
         .insert(users)
@@ -97,7 +94,7 @@ async function seedUsers() {
         ])
         .returning();
 
-    // Matches ratings/reviews/sales from sellers array in Seller.ts
+    // Estadísticas de muestra para los 4 usuarios sembrados arriba, en el mismo orden
     const sellerStats = [
         { rating_avg: "3.0", review_count: 50, sales_count: 40 }, // Alfredo
         { rating_avg: "4.5", review_count: 28, sales_count: 22 }, // Camila
@@ -136,10 +133,11 @@ async function seedUsers() {
             notifications: true,
         });
 
-        await db.insert(user_roles).values({
-            user_id: user.id,
-            role_type_id: sellerRole.role_type_id,
-        });
+        // Todos parten como compradores; estos 4 ya tienen productos, así que también son vendedores
+        await db.insert(user_roles).values([
+            { user_id: user.id, role_type_id: buyerRole.role_type_id },
+            { user_id: user.id, role_type_id: sellerRole.role_type_id },
+        ]);
     }
 
     console.log("Users seeded successfully");

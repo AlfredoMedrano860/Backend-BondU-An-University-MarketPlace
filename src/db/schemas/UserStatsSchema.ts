@@ -8,7 +8,7 @@ import { users } from "./UsersSchema";
 export const user_stats = pgTable("user_stats", {
     id: uuid("id").primaryKey().defaultRandom(),
     /** FK hacia `users`. Cada usuario tiene su propio registro de estadisticas */
-    user_id: uuid("user_id").notNull().references(() => users.id),
+    user_id: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     /** Promedio de calificaciones recibidas como seller. Nullable si aun no tiene resenas */
     rating_avg: numeric("rating_avg"),
     /** Contador desnormalizado de resenas recibidas. Default 0 */

@@ -4,7 +4,7 @@ import { users } from "./UsersSchema";
 
 export const user_contact = pgTable("user_contact", {
     id: uuid("id").primaryKey().defaultRandom(),
-    user_id: uuid("user_id").notNull().references(() => users.id),
+    user_id: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     bio: text("bio"),
     instagram: text("instagram"),
     telegram: text("telegram"),

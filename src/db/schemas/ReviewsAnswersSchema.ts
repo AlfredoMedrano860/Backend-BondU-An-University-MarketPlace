@@ -6,8 +6,8 @@ import { reviews } from "./ReviewsSchema";
 /** Tabla de respuestas del seller a una reseña */
 export const review_answers = pgTable("reviews_answers", {
     id: uuid("id").primaryKey().defaultRandom(),
-    /** FK hacia `reviews`. Una reseña puede tener multiples respuestas */
-    review_id: uuid("review_id").notNull().references(() => reviews.id),
+    /** FK hacia `reviews`. Una reseña puede tener multiples respuestas. Se borran en cascada con la reseña */
+    review_id: uuid("review_id").notNull().references(() => reviews.id, { onDelete: "cascade" }),
     comment: text("comment").notNull(),
     /** Incluye timezone a diferencia de otros timestamps en el schema */
     created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

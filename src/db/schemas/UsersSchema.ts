@@ -7,7 +7,7 @@ export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     username: text("username").notNull(),
     /** Debe ser unico. Se usa como credencial de login */
-    email: text("email").notNull(),
+    email: text("email").notNull().unique(),
     /** Almacenada con hash bcrypt, nunca en texto plano */
     password: text("password").notNull(),
     /** URL del avatar del usuario. Nullable si no ha subido foto */
@@ -27,11 +27,14 @@ export const users = pgTable("users", {
 /** Tipo inferido de la fila completa de `users` */
 export type User = typeof users.$inferSelect;
 
-/** Schema Zod para insertar un usuario (todos los campos requeridos) */
-export const insert_user_schema = createInsertSchema(users);
-
 /** Schema Zod para seleccionar un usuario */
 export const select_user_schema = createSelectSchema(users);
 
-/** Schema Zod para actualizar un usuario (todos los campos opcionales) */
-export const update_user_schema = createInsertSchema(users).partial();
+/**
+ * Schema Zod para actualizar un usuario desde `PUT /users/:id`.
+ * Excluye `id`, `password` y las marcas de tiempo: la contraseña solo se cambia
+ * mediante `PATCH /users/:id/password` (verifica la actual y la hashea).
+ */
+export const update_user_schema = createInsertSchema(users)
+    .omit({ id: true, password: true, created_at: true, updated_at: true })
+    .partial();

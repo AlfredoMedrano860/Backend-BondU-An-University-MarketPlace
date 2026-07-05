@@ -2,6 +2,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../db/connection';
 import { user_stats } from '../db/schemas/UserStatsSchema';
+import type { AuthenticatedRequest } from '../middleware/auth';
 
 /**
  * Retorna las estadisticas de todos los usuarios.
@@ -24,7 +25,7 @@ export const getAllUserStats = async (_req: Request, res: Response) => {
  */
 export const getUserStatsById = async (req: Request, res: Response) => {
     try {
-        const data = await db.select().from(user_stats).where(eq(user_stats.user_id, req.params.id as string)); // busca por user_id
+        const data = await db.select().from(user_stats).where(eq(user_stats.user_id, req.params.id as string));
         if (!data.length) return res.status(404).json({ message: 'Stats not found' });
         return res.status(200).json(data[0]);
     } catch {
@@ -33,12 +34,15 @@ export const getUserStatsById = async (req: Request, res: Response) => {
 };
 
 /**
- * Crea un registro de estadisticas para un usuario.
+ * Crea un registro de estadisticas para un usuario. Solo para uno mismo.
  * @param req - Body: campos de las estadisticas
- * @param res - 201 con el registro creado, o 500 en error interno
+ * @param res - 201 con el registro creado, 403 si es para otro usuario, o 500 en error interno
  */
-export const createUserStats = async (req: Request, res: Response) => {
+export const createUserStats = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        if (req.body.user_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot create stats for another user' });
+        }
         const data = await db.insert(user_stats).values(req.body).returning();
         return res.status(201).json(data[0]);
     } catch {
@@ -47,14 +51,19 @@ export const createUserStats = async (req: Request, res: Response) => {
 };
 
 /**
- * Actualiza las estadisticas del usuario indicado por ID.
+ * Actualiza las estadisticas del usuario indicado por ID. Solo el dueño puede editarlas.
  * @param req - Params: `id` del registro; Body: campos a actualizar
- * @param res - 200 con el registro actualizado, 404 si no existe, o 500 en error interno
+ * @param res - 200 con el registro actualizado, 403 si no es el dueño, 404 si no existe, o 500 en error interno
  */
-export const updateUserStats = async (req: Request, res: Response) => {
+export const updateUserStats = async (req: AuthenticatedRequest, res: Response) => {
     try {
+        const [existing] = await db.select({ user_id: user_stats.user_id }).from(user_stats).where(eq(user_stats.id, req.params.id as string));
+        if (!existing) return res.status(404).json({ message: 'Stats not found' });
+        if (existing.user_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot update another user\'s stats' });
+        }
+
         const data = await db.update(user_stats).set(req.body).where(eq(user_stats.id, req.params.id as string)).returning();
-        if (!data.length) return res.status(404).json({ message: 'Stats not found' });
         return res.status(200).json(data[0]);
     } catch {
         return res.status(500).json({ message: 'Internal server error' });
@@ -62,14 +71,19 @@ export const updateUserStats = async (req: Request, res: Response) => {
 };
 
 /**
- * Elimina las estadisticas de un usuario por su ID.
+ * Elimina las estadisticas de un usuario por su ID. Solo el dueño puede eliminarlas.
  * @param req - Params: `id` del registro de estadisticas
- * @param res - 200 con mensaje de confirmacion, 404 si no existe, o 500 en error interno
+ * @param res - 200 con mensaje de confirmacion, 403 si no es el dueño, 404 si no existe, o 500 en error interno
  */
-export const deleteUserStats = async (req: Request, res: Response) => {
+export const deleteUserStats = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const data = await db.delete(user_stats).where(eq(user_stats.id, req.params.id as string)).returning();
-        if (!data.length) return res.status(404).json({ message: 'Stats not found' });
+        const [existing] = await db.select({ user_id: user_stats.user_id }).from(user_stats).where(eq(user_stats.id, req.params.id as string));
+        if (!existing) return res.status(404).json({ message: 'Stats not found' });
+        if (existing.user_id !== req.user?.id) {
+            return res.status(403).json({ message: 'Cannot delete another user\'s stats' });
+        }
+
+        await db.delete(user_stats).where(eq(user_stats.id, req.params.id as string));
         return res.status(200).json({ message: 'Stats deleted' });
     } catch {
         return res.status(500).json({ message: 'Internal server error' });

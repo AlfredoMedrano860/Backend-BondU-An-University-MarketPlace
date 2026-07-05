@@ -3,12 +3,11 @@ import { reviews } from "../schemas/ReviewsSchema";
 import { review_answers } from "../schemas/ReviewsAnswersSchema";
 import { users } from "../schemas/UsersSchema";
 import { user_stats } from "../schemas/UserStatsSchema";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 /**
- * Puebla la base de datos con las reseñas definidas en
- * src/components/data/Review.ts del frontend.
- * Requiere que los 4 usuarios de UsersSeed existan.
+ * Puebla la base de datos con reseñas de muestra entre los 4 usuarios de UsersSeed.
+ * Requiere que esos 4 usuarios ya existan.
  *
  * Mapa de reseñas del frontend (indexado por vendedor):
  *   Alfredo (index 0): recibe reseña de Camila (rating 3)
@@ -30,7 +29,8 @@ const seed = async () => {
         await db.delete(review_answers).execute();
         await db.delete(reviews).execute();
 
-        const existingUsers = await db.select().from(users).limit(4);
+        // Ordenados por fecha de creación para no tomar cuentas de prueba dejadas por pruebas manuales
+        const existingUsers = await db.select().from(users).orderBy(asc(users.created_at)).limit(4);
 
         if (existingUsers.length < 4) {
             console.warn("Not enough users to seed reviews. Run UsersSeed first.");

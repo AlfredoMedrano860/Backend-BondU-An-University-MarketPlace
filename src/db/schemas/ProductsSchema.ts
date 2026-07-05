@@ -11,8 +11,8 @@ export const products = pgTable("products", {
   description: text("description").notNull(),
   /** Precio en la moneda local (entero, sin decimales). Ej: 15000 = $15.000 CLP */
   price: integer("price").notNull(),
-  /** FK hacia `users`. Vendedor que publica el producto */
-  seller_id: uuid("seller_id").references(() => users.id),
+  /** FK hacia `users`. Vendedor que publica el producto. Se borra en cascada si se borra la cuenta */
+  seller_id: uuid("seller_id").references(() => users.id, { onDelete: "cascade" }),
   /** FK hacia `product_conditions`. Nullable si aun no se asigna condicion */
   condition_id: uuid("condition_id").references(() => product_conditions.condition_id),
   /** FK hacia `product_status`. Nullable si aun no se asigna estado */

@@ -1,10 +1,10 @@
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import {createInsertSchema,createSelectSchema} from "drizzle-zod";
 
-/** Catalogo de estados de disponibilidad de un producto (ej. Available, Out of Stock) */
+/** Catalogo de estados de disponibilidad de un producto (Disponible, Vendido) */
 export const product_status = pgTable("product_status", {
   status_id: uuid("status_id").primaryKey().defaultRandom(),
-  /** Nombre del estado de disponibilidad. Ej: `"Available"`, `"Sold"`, `"Reserved"` */
+  /** Nombre del estado de disponibilidad. Ej: `"Disponible"`, `"Vendido"` */
   name_status: text("name_status").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
